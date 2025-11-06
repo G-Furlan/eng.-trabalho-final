@@ -1,0 +1,19 @@
+<h2>Cadastro de Eventos</h2>
+<form action="/evento/novo" method="POST">
+	<input name="nome" placeholder="Nome do evento">
+	<input name="jogo" placeholder="Jogo">
+	<input name="data" placeholder="Data (DD/MM/AAAA)">
+	<input name="limite_jogadores" placeholder="Limite de jogadores">
+	<input name="faixa_etaria" placeholder="Faixa etária">
+	<input name="local" placeholder="Local">
+	<button type="submit">Salvar</button>
+</form>
+
+<ul>
+{% for e in eventos %}
+	<li>{{ e.nome }} — {{ e.jogo }} — {{ e.data }}
+		<a href="/evento/delete/{{ e.id }}">[Excluir]</a>
+	</li>
+{% endfor %}
+</ul>
+<a href="/">Voltar</a>

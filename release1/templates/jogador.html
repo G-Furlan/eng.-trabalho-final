@@ -1,0 +1,18 @@
+<h2>Cadastro de Jogadores</h2>
+<form action="/jogador/novo" method="POST">
+	<input name="nome" placeholder="Nome">
+	<input name="email" placeholder="Email">
+	<input name="idade" placeholder="Idade">
+	<input name="telefone" placeholder="Telefone">
+	<input name="senha" placeholder="Senha">
+	<button type="submit">Salvar</button>
+</form>
+
+<ul>
+{% for j in jogadores %}
+	<li>{{ j.nome }} — {{ j.email }}
+		<a href="/jogador/delete/{{ j.id }}">[Excluir]</a>
+	</li>
+{% endfor %}
+</ul>
+<a href="/">Voltar</a>
