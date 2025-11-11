@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Bem-vindo ao Sistema de Eventos</h1>
+    <p>Use a navegação acima para gerenciar jogadores e eventos.</p>
+    
+    <div style="margin-top: 40px;">
+        <a href="{{ url_for('lista_jogadores') }}" class="btn">Ver Jogadores</a>
+        <a href="{{ url_for('lista_eventos') }}" class="btn" style="margin-left: 10px;">Ver Eventos</a>
+    </div>
+{% endblock %}

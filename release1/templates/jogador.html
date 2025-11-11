@@ -1,18 +1,46 @@
-<h2>Cadastro de Jogadores</h2>
-<form action="/jogador/novo" method="POST">
-	<input name="nome" placeholder="Nome">
-	<input name="email" placeholder="Email">
-	<input name="idade" placeholder="Idade">
-	<input name="telefone" placeholder="Telefone">
-	<input name="senha" placeholder="Senha">
-	<button type="submit">Salvar</button>
-</form>
+{% extends 'base.html' %}
 
-<ul>
-{% for j in jogadores %}
-	<li>{{ j.nome }} — {{ j.email }}
-		<a href="/jogador/delete/{{ j.id }}">[Excluir]</a>
-	</li>
-{% endfor %}
-</ul>
-<a href="/">Voltar</a>
+{% block content %}
+    
+    <div class="form-wrapper">
+        <h2>Cadastro de Jogadores</h2>
+        
+        <form action="{{ url_for('novo_jogador') }}" method="POST">
+            <div class="form-group">
+                <label for="nome">Nome</label>
+                <input id="nome" name="nome" placeholder="Nome" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" name="email" placeholder="Email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="idade">Idade</label>
+                <input id="idade" name="idade" placeholder="Idade" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input id="telefone" name="telefone" placeholder="Telefone" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="Senha" class="form-control" required>
+            </div>
+            
+            <button type="submit" class="btn">Salvar</button>
+        </form>
+    </div>
+
+    <h2>Jogadores Cadastrados</h2>
+    <div class="list-wrapper">
+        
+        {% for j in jogadores %}
+            <div class="card">
+                <h3>{{ j.nome }}</h3>
+                <p>Email: {{ j.email }}</p>
+                <a href="{{ url_for('excluir_jogador', id=j.id) }}" class="btn-delete">[Excluir]</a>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

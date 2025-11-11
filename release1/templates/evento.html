@@ -1,19 +1,49 @@
-<h2>Cadastro de Eventos</h2>
-<form action="/evento/novo" method="POST">
-	<input name="nome" placeholder="Nome do evento">
-	<input name="jogo" placeholder="Jogo">
-	<input name="data" placeholder="Data (DD/MM/AAAA)">
-	<input name="limite_jogadores" placeholder="Limite de jogadores">
-	<input name="faixa_etaria" placeholder="Faixa etária">
-	<input name="local" placeholder="Local">
-	<button type="submit">Salvar</button>
-</form>
+{% extends 'base.html' %}
 
-<ul>
-{% for e in eventos %}
-	<li>{{ e.nome }} — {{ e.jogo }} — {{ e.data }}
-		<a href="/evento/delete/{{ e.id }}">[Excluir]</a>
-	</li>
-{% endfor %}
-</ul>
-<a href="/">Voltar</a>
+{% block content %}
+    
+    <div class="form-wrapper">
+        <h2>Cadastro de Eventos</h2>
+        <form action="{{ url_for('novo_evento') }}" method="POST">
+            <div class="form-group">
+                <label for="nome">Nome do evento</label>
+                <input id="nome" name="nome" placeholder="Nome do evento" required>
+            </div>
+            <div class="form-group">
+                <label for="jogo">Jogo</label>
+                <input id="jogo" name="jogo" placeholder="Jogo" required>
+            </div>
+            <div class="form-group">
+                <label for="data">Data</label>
+                <input id="data" name="data" placeholder="Data (DD/MM/AAAA)">
+            </div>
+            <div class="form-group">
+                <label for="limite_jogadores">Limite de jogadores</label>
+                <input id="limite_jogadores" name="limite_jogadores" placeholder="Limite de jogadores">
+            </div>
+            <div class="form-group">
+                <label for="faixa_etaria">Faixa etária</label>
+                <input id="faixa_etaria" name="faixa_etaria" placeholder="Faixa etária">
+            </div>
+            <div class="form-group">
+                <label for="local">Local</label>
+                <input id="local" name="local" placeholder="Local">
+            </div>
+            <button type="submit" class="btn">Salvar</button>
+        </form>
+    </div>
+
+    <h2>Eventos Agendados</h2>
+    <div class="list-wrapper">
+        
+        {% for e in eventos %}
+            <div class="card">
+                <h3>{{ e.nome }}</h3>
+                <p>Jogo: {{ e.jogo }}</p>
+                <p>Data: {{ e.data }}</p>
+                <a href="{{ url_for('excluir_evento', id=e.id) }}" class="btn-delete">[Excluir]</a>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

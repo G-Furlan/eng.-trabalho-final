@@ -10,9 +10,10 @@ with app.app_context():
 	db.create_all()
 
 # Página inicial
+# Página inicial
 @app.route('/')
 def index():
-	return "<h2>Sistema de Torneios — Release 1</h2><a href='/jogadores'>Jogadores</a> | <a href='/eventos'>Eventos</a>"
+	return render_template('index.html')
 
 # -----------------------------
 # CRUD Jogadores
