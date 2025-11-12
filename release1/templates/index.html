@@ -1,11 +1,43 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-sports S - Plataforma de Eventos</title>
+    <!-- Link para o CSS principal -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="home-page">
 
-{% block content %}
-    <h1>Bem-vindo ao Sistema de Eventos</h1>
-    <p>Use a navegação acima para gerenciar jogadores e eventos.</p>
-    
-    <div style="margin-top: 40px;">
-        <a href="{{ url_for('lista_jogadores') }}" class="btn">Ver Jogadores</a>
-        <a href="{{ url_for('lista_eventos') }}" class="btn" style="margin-left: 10px;">Ver Eventos</a>
-    </div>
-{% endblock %}
+    <!-- Header da Home (Agora branco e FORA da imagem) -->
+    <header class="header-home">
+        <div class="container">
+            <a href="{{ url_for('index') }}" class="logo-home">E-sports S</a>
+            <nav>
+                <!-- Link para a página de Login/Cadastro -->
+                <a href="{{ url_for('login') }}" class="btn-login">Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Seção principal com a imagem de fundo -->
+    <section class="hero-section">
+        <!-- Conteúdo centralizado -->
+        <div class="hero-content">
+            
+            <!-- Coluna da Esquerda (Botões) -->
+            <div class="hero-call-to-action">
+                <a href="{{ url_for('login') }}" class="btn btn-primary">Comece a jogar hoje!</a>
+                <a href="{{ url_for('login') }}" class="btn btn-secondary">Organize seu próprio evento!</a>
+            </div>
+            
+            <!-- Coluna da Direita (Descrição) -->
+            <div class="hero-text-box">
+                <h2>Sua plataforma de inscrição e gerenciamento de eventos para seus jogos favoritos!</h2>
+            </div>
+
+        </div>
+    </section>
+
+</body>
+</html>

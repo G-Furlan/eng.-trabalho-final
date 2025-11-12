@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Cadastro - E-sports S</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-page">
+
+    <div class="login-container">
+        <!-- Logo acima do form -->
+        <a href="{{ url_for('index') }}" class="login-logo">E-sports S</a>
+        
+        <!-- Mensagens de feedback (Ex: "Login inválido", "Usuário criado") -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <!-- Mudei a classe flash-message para ser dinâmica com a categoria (info, error) -->
+                    <div class="flash-message flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- 
+            ==============================
+            === NOVO FORMULÁRIO DE LOGIN ===
+            ==============================
+        -->
+        <h2>Acesse sua conta</h2>
+        <!-- Este form envia para a rota /login_submit -->
+        <form action="{{ url_for('login_submit') }}" method="POST" class="login-form" style="margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 30px;">
+            <div class="form-group">
+                <label for="nickname_login">Nickname</label>
+                <input type="text" id="nickname_login" name="nickname_login" required>
+            </div>
+            <div class="form-group">
+                <label for="senha_login">Senha</label>
+                <input type="password" id="senha_login" name="senha_login" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full-width">Entrar</button>
+        </form>
+        
+        <!-- 
+            ==================================
+            === FORMULÁRIO DE CRIAR CONTA ===
+            ==================================
+        -->
+        <h2>Ou crie sua conta</h2>
+        
+        <!-- Este form envia para a rota /register (como já estava) -->
+        <form action="{{ url_for('register') }}" method="POST" class="login-form">
+            
+            <!-- 1. ESCOLHA DE TIPO -->
+            <div class="form-group">
+                <label for="tipo_usuario">Eu sou um:</label>
+                <select name="tipo_usuario" id="tipo_usuario" required>
+                    <option value="jogador">Jogador</option>
+                    <option value="organizador">Organizador de Evento</option>
+                </select>
+            </div>
+
+            <!-- 2. NICKNAME -->
+            <div class="form-group">
+                <label for="nickname">Nickname (para login)</label>
+                <input type="text" id="nickname" name="nickname" placeholder="Seu apelido único" required>
+                <!-- Mensagem de erro (vamos implementar com JS/Flask depois) -->
+                <!-- <span class="error-message">Esse nome já existe!</span> -->
+            </div>
+
+            <!-- 3. SENHA -->
+            <div class="form-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="Mín. 8 caracteres, 1 maiúscula, 1 número" 
+                       required minlength="8" 
+                       pattern="(?=.*\d)(?=.*[A-Z]).{8,}"
+                       title="Deve conter ao menos 1 número, 1 letra maiúscula e no mínimo 8 caracteres.">
+            </div>
+
+            <!-- 4. TELEFONE -->
+            <div class="form-group">
+                <label for="telefone">Telefone</label>
+                <input type="tel" id="telefone" name="telefone" placeholder="Apenas números" 
+                       pattern="[0-9]+" title="Apenas números são permitidos.">
+            </div>
+
+            <!-- 5. IDADE -->
+            <div class="form-group">
+                <label for="idade">Idade</label>
+                <input type="number" id="idade" name="idade" placeholder="Apenas números" min="1">
+            </div>
+
+            <!-- 6. EMAIL -->
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full-width">Criar Conta</button>
+        </form>
+        
+        <div class="login-footer">
+            <!-- O link de "Faça Login" não é mais necessário aqui -->
+        </div>
+    </div>
+
+</body>
+</html>

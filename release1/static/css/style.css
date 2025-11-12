@@ -1,14 +1,13 @@
-/* static/css/style.css */
+/* Importa a fonte nova (mais arredondada) */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
 
-/* Importa uma fonte mais moderna */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-
-/* Variáveis de Cor (pra facilitar a mudança depois) */
+/* Variáveis de Cor */
 :root {
     --cor-principal: #E63946; /* Vermelho forte */
     --cor-fundo: #FFFFFF;     /* Branco */
     --cor-texto: #333333;      /* Cinza escuro */
     --cor-borda: #DDDDDD;     /* Cinza claro */
+    --cor-destaque: #2A2D34; /* Cinza Chumbo */
     --sombra: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -20,40 +19,185 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Nunito', sans-serif; /* Nova fonte */
     background-color: var(--cor-fundo);
     color: var(--cor-texto);
     line-height: 1.6;
 }
 
 .container {
-    max-width: 1100px;
-    margin: 20px auto;
+    max-width: 1200px; /* Um pouco mais largo para a home */
+    margin: 0 auto;
     padding: 0 20px;
 }
 
-/* --- Cabeçalho e Navegação --- */
-header {
-    background: var(--cor-fundo);
-    border-bottom: 2px solid var(--cor-borda);
-    padding: 20px 0;
-    margin-bottom: 30px;
+/* --- Títulos --- */
+h1, h2, h3 {
+    font-weight: 700;
 }
 
-header .container {
+h1, h2 {
+    color: var(--cor-principal); /* Títulos em vermelho */
+    margin-bottom: 20px;
+}
+
+/* --- Botões Base --- */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--cor-principal);
+    color: var(--cor-fundo);
+}
+.btn-primary:hover {
+    background-color: #c9303c;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--cor-fundo); /* Branco */
+    color: var(--cor-destaque); /* Cinza Chumbo */
+}
+.btn-secondary:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+/* --- Estilos da Home Page (index.html) --- */
+
+.home-page {
+    padding: 0;
+    margin: 0;
+}
+
+/* Header da Home (Agora branco, não mais transparente) */
+.header-home {
+    width: 100%;
+    padding: 20px 0;
+    background: var(--cor-fundo); /* Fundo branco */
+    border-bottom: 2px solid var(--cor-borda);
+    /* Removido: position: absolute */
+}
+
+.header-home .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-header .logo {
+.logo-home {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--cor-principal); /* Letra vermelha */
+    text-decoration: none;
+}
+
+.btn-login {
+    background: var(--cor-principal); /* Vermelho */
+    color: var(--cor-fundo);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.btn-login:hover {
+    background: #c9303c;
+}
+
+/* Hero Section (Imagem de Fundo) */
+.hero-section {
+    /* Altura = 100% da tela MENOS o tamanho do header */
+    min-height: calc(100vh - 74px); 
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza o conteúdo verticalmente */
+    color: var(--cor-fundo);
+    
+    /* IMAGEM DE FUNDO - TROQUE ESSE LINK! */
+    /* Deixei o filtro escuro mais fraco (0.4) */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                      url('https://placehold.co/1920x1080/E63946/FFFFFF?text=Troque-me!+(1920x1080)');
+    background-size: cover;
+    background-position: center center;
+}
+
+/* Conteúdo Hero (Novo layout: Esquerda/Direita) */
+.hero-content {
+    display: flex;
+    justify-content: space-between; /* Espaço entre os itens */
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Coluna da Esquerda (Botões) */
+.hero-call-to-action {
+    width: 100%;
+    max-width: 450px;
+}
+
+.hero-call-to-action .btn {
+    display: block; /* Botões um em cima do outro */
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: center;
+    padding: 15px;
+    font-size: 1.1rem;
+}
+
+/* Coluna da Direita (Texto) */
+.hero-text-box {
+    background: rgba(42, 45, 52, 0.7); /* Fundo cinza-chumbo semi-transparente */
+    backdrop-filter: blur(5px);
+    border-radius: 8px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px; /* Largura da caixa de texto */
+    text-align: left;
+}
+
+.hero-text-box h2 {
+    font-size: 2.2rem;
+    color: var(--cor-fundo); /* Branco */
+    margin-bottom: 0; /* Tiramos os botões daqui */
+    line-height: 1.3;
+}
+
+
+/* --- Estilos do Header Interno (base.html) --- */
+header.header-internal {
+    background: var(--cor-fundo);
+    border-bottom: 2px solid var(--cor-borda);
+    padding: 20px 0;
+    margin-bottom: 30px;
+}
+header.header-internal .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+header.header-internal .logo {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--cor-principal); /* Logo em vermelho */
     text-decoration: none;
 }
-
-nav a {
+header.header-internal nav a {
     color: var(--cor-texto);
     text-decoration: none;
     font-weight: 600;
@@ -62,21 +206,99 @@ nav a {
     border-radius: 5px;
     transition: all 0.3s ease;
 }
-
-nav a:hover,
-nav a.active {
+header.header-internal nav a:hover,
+header.header-internal nav a.active {
     background-color: var(--cor-principal);
     color: var(--cor-fundo);
 }
 
-/* --- Títulos --- */
-h1, h2 {
-    color: var(--cor-principal); /* Títulos em vermelho */
-    margin-bottom: 20px;
-    font-weight: 700;
+
+/* --- Estilos da Página de Login (login.html) --- */
+.login-page {
+    background-color: #f4f4f4; /* Fundo cinza claro */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
 }
 
-/* --- Formulários --- */
+.login-container {
+    background: var(--cor-fundo);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: var(--sombra);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.login-logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cor-principal);
+    text-decoration: none;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.login-container h2 {
+    font-size: 1.5rem;
+    color: var(--cor-texto);
+    margin-bottom: 20px;
+}
+
+.login-form .form-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+.login-form .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+/* Estilo para o <select> e <input> no form */
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 5px;
+    font-family: 'Nunito', sans-serif; /* Fonte nova aqui tbm */
+    font-size: 1rem;
+    /* margin-top: 5px; (removido, o label já tem margin-bottom) */
+}
+
+.btn-full-width {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.login-footer {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #777;
+}
+.login-footer a {
+    color: var(--cor-principal);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Mensagem de flash (feedback) */
+.flash-message {
+    padding: 15px;
+    background: #e0f0ff;
+    border: 1px solid #b3d4ff;
+    color: #0056b3;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+/* --- Estilos dos Formulários Internos (jogador/evento) --- */
 .form-wrapper {
     background: #fdfdfd;
     padding: 30px;
@@ -85,45 +307,26 @@ h1, h2 {
     margin-bottom: 40px;
 }
 
-.form-group {
+.form-wrapper .form-group {
     margin-bottom: 15px;
 }
 
-.form-group label {
+.form-wrapper .form-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: 600;
 }
 
-.form-group input {
+.form-wrapper .form-group input {
     width: 100%;
     padding: 12px;
     border: 1px solid var(--cor-borda);
     border-radius: 5px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Nunito', sans-serif; /* Fonte nova aqui tbm */
     font-size: 1rem;
 }
 
-.btn {
-    display: inline-block;
-    background-color: var(--cor-principal);
-    color: var(--cor-fundo);
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    font-weight: 600;
-    font-size: 1rem;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.btn:hover {
-    background-color: #c9303c; /* Vermelho um pouco mais escuro */
-    transform: translateY(-2px);
-}
-
-/* --- Listas e Cards --- */
+/* --- Estilos das Listas Internas (jogador/evento) --- */
 .list-wrapper {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -164,4 +367,59 @@ h1, h2 {
 
 .btn-delete:hover {
     text-decoration: underline;
+}
+
+/* --- ADICIONE ESTE BLOCO NO FINAL DO SEU STYLE.CSS --- */
+
+/* --- Estilos para o Menu Logado (base.html) --- */
+.nav-welcome {
+    margin-left: 20px;
+    color: var(--cor-destaque);
+    font-weight: 600;
+}
+
+.btn-logout {
+    background: var(--cor-destaque);
+    color: var(--cor-fundo);
+    font-weight: 600;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+}
+.btn-logout:hover {
+    background: #000;
+}
+
+.btn-login-nav {
+    background: var(--cor-principal);
+    color: var(--cor-fundo);
+    font-weight: 600;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-left: 20px;
+}
+
+/* --- Estilos para Mensagens Flash (login.html) --- */
+/* Remove a cor de fundo padrão (azul) */
+.flash-message {
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+/* Categoria 'info' (Azul/Verde) */
+.flash-info {
+    background: #e0f0ff;
+    border-color: #b3d4ff;
+    color: #0056b3;
+}
+/* Categoria 'error' (Vermelho) */
+.flash-error {
+    background: #fde8e8;
+    border-color: #fabdbd;
+    color: #9c2a2a;
 }
