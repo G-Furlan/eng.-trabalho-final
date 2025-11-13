@@ -1,0 +1,42 @@
+<!-- templates/criar_evento.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="form-wrapper">
+        <h2>Cadastrar Novo Evento</h2>
+        <form action="{{ url_for('novo_evento') }}" method="POST">
+            <div class="form-group">
+                <label for="nome">Nome do Evento</label>
+                <input id="nome" name="nome" placeholder="Nome do evento" required>
+            </div>
+            <div class="form-group">
+                <label for="jogo">Jogo</label>
+                <input id="jogo" name="jogo" placeholder="Jogo" required>
+            </div>
+            
+            <!-- *** MUDANÇA IMPORTANTE AQUI *** -->
+            <div class="form-group">
+                <label for="data">Data do Evento</label>
+                <!-- Mudamos de type="text" para type="date" -->
+                <!-- Isso vai forçar o formato AAAA-MM-DD -->
+                <input type="date" id="data" name="data" required>
+            </div>
+
+            <div class="form-group">
+                <label for="limite_jogadores">Limite de jogadores</label>
+                <input type="number" id="limite_jogadores" name="limite_jogadores" placeholder="Limite de jogadores">
+            </div>
+            <div class="form-group">
+                <label for="faixa_etaria">Faixa etária</label>
+                <input type="text" id="faixa_etaria" name="faixa_etaria" placeholder="Faixa etária">
+            </div>
+            <div class="form-group">
+                <label for="local">Local</label>
+                <input id="local" name="local" placeholder="Local">
+            </div>
+            <button type="submit" class="btn">Cadastrar Evento</button>
+        </form>
+    </div>
+        
+{% endblock %}

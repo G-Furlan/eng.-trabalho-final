@@ -5,33 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Organizador de Eventos</title>
-    <!-- Link para o CSS que agora tem MAIS estilos -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-    <!-- Este é o Header da ÁREA INTERNA -->
     <header class="header-internal">
         <div class="container">
-            <!-- Logo atualizado -->
             <a href="{{ url_for('index') }}" class="logo">E-sports S</a>
             
             <nav>
-                <!-- Links Padrão -->
-                <a href="{{ url_for('lista_jogadores') }}">Jogadores</a>
+                <!-- Links Padrão (visíveis para todos logados) -->
                 <a href="{{ url_for('lista_eventos') }}">Eventos</a>
+                
+                <!-- *** MUDANÇA: A ABA "JOGADORES" FOI REMOVIDA DAQUI *** -->
+                <!-- <a href="{{ url_for('lista_jogadores') }}">Jogadores</a> -->
 
-                <!-- 
-                    ==================================
-                    === LÓGICA DE LOGIN NO MENU ===
-                    ==================================
-                -->
                 {% if session.user_id %}
-                    <!-- Se está logado -->
+                    
+                    {% if session.user_type == 'organizador' %}
+                        <a href="{{ url_for('dashboard') }}" class="nav-dashboard-link">Meu Dashboard</a>
+                    {% endif %}
+                    
                     <span class="nav-welcome">Olá, {{ session.user_name }}!</span>
                     <a href="{{ url_for('logout') }}" class="btn-logout">Sair</a>
                 {% else %}
-                    <!-- Se NÃO está logado (ex: tentou acessar /eventos direto) -->
                     <a href="{{ url_for('login') }}" class="btn-login-nav">Login</a>
                 {% endif %}
             </nav>
@@ -40,7 +37,17 @@
 
     <main>
         <div class="container">
-            <!-- Bloco de conteúdo (jogador.html e evento.html entram aqui) -->
+            <!-- Mensagens Flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             {% block content %}{% endblock %}
         </div>
     </main>

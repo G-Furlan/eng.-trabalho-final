@@ -1,0 +1,68 @@
+<!-- templates/dashboard.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="dashboard-header">
+        <h2>Meu Dashboard de Organizador</h2>
+        <a href="{{ url_for('criar_evento') }}" class="btn btn-primary">Criar Novo Evento</a>
+    </div>
+
+    <!-- 
+        ==================================
+        === MUDANÇA: DIVISÃO DO DASHBOARD ===
+        ==================================
+    -->
+
+    <!-- Lista de eventos ATIVOS -->
+    <h3>Eventos Ativos</h3>
+    <div class="list-wrapper">
+        
+        <!-- 'eventos_ativos' vem do app.py -->
+        {% if eventos_ativos %}
+            {% for e in eventos_ativos %}
+                <div class="card">
+                    <h3>{{ e.nome }}</h3>
+                    <!-- O '.strftime' formata a data para DD/MM/AAAA -->
+                    <p>Data: {{ e.data.strftime('%d/%m/%Y') }}</p>
+                    <p>Status: <span class="evento-status status-{{ e.status.lower() }}">{{ e.status }}</span></p>
+
+                    <div class="card-actions">
+                        <!-- MUDANÇA: O botão "Gerenciar" agora funciona! -->
+                        <a href="{{ url_for('evento_detalhe', id=e.id) }}" class="btn-card-edit">Gerenciar</a>
+                        <a href="{{ url_for('excluir_evento', id=e.id) }}" class="btn-delete">[Excluir]</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Você não tem nenhum evento ativo no momento.</p>
+        {% endif %}
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Lista de eventos FINALIZADOS -->
+    <h3>Eventos Finalizados</h3>
+    <div class="list-wrapper">
+        
+        <!-- 'eventos_finalizados' vem do app.py -->
+        {% if eventos_finalizados %}
+            {% for e in eventos_finalizados %}
+                <div class="card card-finalizado">
+                    <h3>{{ e.nome }}</h3>
+                    <p>Data: {{ e.data.strftime('%d/%m/%Y') }}</p>
+                    <p>Status: <span class="evento-status status-{{ e.status.lower() }}">{{ e.status }}</span></p>
+
+                    <div class="card-actions">
+                        <!-- MUDANÇA: O botão "Gerenciar" leva para os detalhes -->
+                        <a href="{{ url_for('evento_detalhe', id=e.id) }}" class="btn-card-edit">Ver Detalhes</a>
+                        <a href="{{ url_for('excluir_evento', id=e.id) }}" class="btn-delete">[Excluir]</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Você ainda não finalizou nenhum evento.</p>
+        {% endif %}
+    </div>
+
+{% endblock %}

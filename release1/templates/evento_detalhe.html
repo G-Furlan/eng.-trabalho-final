@@ -1,0 +1,84 @@
+<!-- templates/evento_detalhe.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="detalhe-evento-wrapper">
+        <div class="detalhe-header">
+            <!-- Informações do Evento (sem mudança) -->
+            <h1>{{ evento.nome }}</h1>
+            <span class="evento-status status-{{ evento.status.lower() }}">{{ evento.status }}</span>
+        </div>
+        
+        <div class="detalhe-body">
+            <!-- (sem mudança) -->
+            <p><strong>Jogo:</strong> {{ evento.jogo }}</p>
+            <p><strong>Data:</strong> {{ evento.data.strftime('%d/%m/%Y') }}</p>
+            <p><strong>Local:</strong> {{ evento.local }}</p>
+            <p><strong>Organizado por:</strong> {{ evento.organizador.nome }}</p>
+            <p><strong>Limite de Jogadores:</strong> {{ evento.limite_jogadores }}</p>
+            <p><strong>Faixa Etária:</strong> {{ evento.faixa_etaria }}</p>
+        </div>
+
+        <div class="detalhe-actions">
+            
+            <!-- 
+                ==================================
+                === CORREÇÃO DE LÓGICA (O BUG) ===
+                ==================================
+            -->
+
+            <!-- 
+                Checa DUAS coisas: 
+                1. O usuário é um Organizador? 
+                2. O ID do usuário é o ID do dono do evento?
+                Ambos precisam ser verdadeiros.
+            -->
+            {% if user_session.user_type == 'organizador' and user_session.user_id == evento.organizador_id %}
+                
+                <!-- Ações do DONO (Organizador) -->
+                
+                {% if evento.status == 'Ativo' %}
+                    <a href="{{ url_for('encerrar_evento', id=evento.id) }}" class="btn btn-encerrar">Encerrar Evento</a>
+                    <!-- O botão "Gerenciar Inscrições" ainda não faz nada -->
+                    <a href="#" class="btn btn-primary">Gerenciar Inscrições</a> 
+                {% else %}
+                    <p class="evento-finalizado-msg">Este evento já foi finalizado.</p>
+                {% endif %}
+
+            <!-- 
+                Se ele não for o dono, checa se ele é um Jogador.
+            -->
+            {% elif user_session.user_type == 'jogador' %}
+                
+                <!-- Ações do JOGADOR -->
+                
+                {% if evento.status == 'Ativo' %}
+                    
+                    <!-- 'is_inscrito' vem do app.py (True ou False) -->
+                    {% if is_inscrito %}
+                        <!-- Se JÁ está inscrito, mostra o botão de Cancelar -->
+                        <a href="{{ url_for('cancelar_inscricao', id=evento.id) }}" class="btn btn-cancelar">Cancelar Inscrição</a>
+                        <p style="margin-top: 10px; color: green;">✔ Você está inscrito neste evento.</p>
+                    {% else %}
+                        <!-- Se NÃO está inscrito, mostra o botão de Participar -->
+                        <a href="{{ url_for('inscrever', id=evento.id) }}" class="btn btn-primary">Quero Participar!</a>
+                    {% endif %}
+
+                {% else %}
+                    <p class="evento-finalizado-msg">Este evento já foi finalizado. Inscrições encerradas.</p>
+                {% endif %}
+            
+            <!-- 
+                Opcional: O que um Organizador que NÃO É O DONO vê?
+                Ele só vê a mensagem de status (ou nada).
+            -->
+            {% elif user_session.user_type == 'organizador' %}
+                 <p>Você está vendo este evento como um Organizador (você não é o dono).</p>
+            
+            {% endif %}
+
+        </div>
+    </div>
+        
+{% endblock %}

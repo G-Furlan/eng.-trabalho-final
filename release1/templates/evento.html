@@ -1,47 +1,35 @@
+<!-- templates/evento.html -->
 {% extends 'base.html' %}
 
 {% block content %}
     
-    <div class="form-wrapper">
-        <h2>Cadastro de Eventos</h2>
-        <form action="{{ url_for('novo_evento') }}" method="POST">
-            <div class="form-group">
-                <label for="nome">Nome do evento</label>
-                <input id="nome" name="nome" placeholder="Nome do evento" required>
-            </div>
-            <div class="form-group">
-                <label for="jogo">Jogo</label>
-                <input id="jogo" name="jogo" placeholder="Jogo" required>
-            </div>
-            <div class="form-group">
-                <label for="data">Data</label>
-                <input id="data" name="data" placeholder="Data (DD/MM/AAAA)">
-            </div>
-            <div class="form-group">
-                <label for="limite_jogadores">Limite de jogadores</label>
-                <input id="limite_jogadores" name="limite_jogadores" placeholder="Limite de jogadores">
-            </div>
-            <div class="form-group">
-                <label for="faixa_etaria">Faixa etária</label>
-                <input id="faixa_etaria" name="faixa_etaria" placeholder="Faixa etária">
-            </div>
-            <div class="form-group">
-                <label for="local">Local</label>
-                <input id="local" name="local" placeholder="Local">
-            </div>
-            <button type="submit" class="btn">Salvar</button>
-        </form>
-    </div>
-
-    <h2>Eventos Agendados</h2>
-    <div class="list-wrapper">
+    <h2>Eventos da Comunidade</h2>
+    <p>Próximos eventos ativos organizados pela comunidade.</p>
+    
+    <div class="list-wrapper" style="margin-top: 20px;">
         
+        <!-- 'eventos' aqui só tem os "Ativos" (definido no app.py) -->
+        {% if not eventos %}
+            <p>Nenhum evento agendado no momento.</p>
+        {% endif %}
+
         {% for e in eventos %}
             <div class="card">
                 <h3>{{ e.nome }}</h3>
                 <p>Jogo: {{ e.jogo }}</p>
-                <p>Data: {{ e.data }}</p>
-                <a href="{{ url_for('excluir_evento', id=e.id) }}" class="btn-delete">[Excluir]</a>
+                <!-- O '.strftime' formata a data para DD/MM/AAAA -->
+                <p>Data: {{ e.data.strftime('%d/%m/%Y') }}</p>
+                <p>Organizado por: <strong>{{ e.organizador.nome }}</strong></p>
+
+                <!-- MUDANÇA: O botão "Ver Detalhes" agora funciona! -->
+                <a href="{{ url_for('evento_detalhe', id=e.id) }}" class="btn-card-participar">Ver Detalhes</a> 
+
+                <!-- 
+                    ==================================
+                    === BOTÃO EXCLUIR REMOVIDO DAQUI ===
+                    ==================================
+                -->
+                <!-- O 'if' de excluir foi removido, como você pediu -->
             </div>
         {% endfor %}
     </div>
