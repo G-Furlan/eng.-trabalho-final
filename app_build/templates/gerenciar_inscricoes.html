@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="detalhe-header">
+        <div>
+            <h2>Gerenciar Classificatória: {{ evento.nome }}</h2>
+            <p>Defina os pontos. Os <strong>{{ evento.vagas_mata_mata }} melhores</strong> avançam.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('gerar_mata_mata', id=evento.id) }}" class="btn btn-primary" onclick="return confirm('Tem certeza? Isso vai criar a chave com os Top {{ evento.vagas_mata_mata }}.')">
+                🏆 Encerrar e Gerar Chaves (Top {{ evento.vagas_mata_mata }})
+            </a>
+            <a href="{{ url_for('evento_detalhe', id=evento.id) }}" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
+
+    <div class="stats-card">
+        <p><strong>Total de Inscritos:</strong> {{ total_inscritos }} / {{ evento.limite_jogadores or 'Ilimitado' }}</p>
+    </div>
+    
+    {% if inscricoes %}
+        <div class="table-responsive">
+            <table class="inscritos-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Jogador</th>
+                        <th>Pontos</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inscricao in inscricoes %}
+                    <!-- Destaca dinamicamente com base na config do evento -->
+                    <tr class="{% if loop.index <= evento.vagas_mata_mata and inscricao.status_participacao == 'Ativo' %}row-classificado{% endif %}">
+                        <td>
+                            {% if loop.index <= evento.vagas_mata_mata and inscricao.status_participacao == 'Ativo' %}
+                                <span class="rank-badge rank-top">{{ loop.index }}º</span>
+                            {% else %}
+                                {{ loop.index }}º
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            <strong>{{ inscricao.jogador.nome }}</strong><br>
+                            <span style="font-size: 0.8rem; color: #777;">{{ inscricao.jogador.email }}</span>
+                        </td>
+                        
+                        <td>
+                            <form action="{{ url_for('pontuar_inscricao', id=inscricao.id) }}" method="POST" style="display: flex; align-items: center; gap: 5px;">
+                                <input type="number" name="pontos" value="{{ inscricao.pontos }}" class="input-pontos">
+                                <button type="submit" class="btn-icon-save" title="Salvar Pontos">💾</button>
+                            </form>
+                        </td>
+                        
+                        <td><span class="status-badge status-{{ inscricao.status_participacao.lower() }}">{{ inscricao.status_participacao }}</span></td>
+                        
+                        <td>
+                            <span style="font-size: 0.8rem; color: #999;">Classificação</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state"><p>Nenhum jogador inscrito.</p></div>
+    {% endif %}
+        
+{% endblock %}

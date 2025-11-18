@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="detalhe-header">
+        <h2>🏆 Mata-Mata: {{ evento.nome }}</h2>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Voltar ao Dashboard</a>
+    </div>
+
+    <div class="bracket-container">
+        
+        {% if not partidas %}
+            <p>Chaves ainda não geradas.</p>
+        {% else %}
+            
+            <!-- Grid de Partidas -->
+            <div class="bracket-grid">
+                {% for p in partidas %}
+                    <div class="match-card {% if 'Final' in p.rodada and 'Semi' not in p.rodada %}match-final{% endif %}">
+                        <div class="match-header">{{ p.rodada }}</div>
+                        
+                        <div class="match-players">
+                            <!-- Jogador 1 -->
+                            <div class="player-row {% if p.vencedor_id == p.jogador1_id %}winner{% endif %}">
+                                <span>{{ p.jogador1.nome if p.jogador1 else '---' }}</span>
+                                {% if user_session.user_type == 'organizador' and not p.vencedor_id and p.jogador1 and p.jogador2 %}
+                                    <a href="{{ url_for('definir_vencedor', partida_id=p.id, vencedor_id=p.jogador1_id) }}" class="btn-win">Venceu</a>
+                                {% endif %}
+                                {% if p.vencedor_id == p.jogador1_id %}🏆{% endif %}
+                            </div>
+
+                            <!-- Jogador 2 -->
+                            <div class="player-row {% if p.vencedor_id == p.jogador2_id %}winner{% endif %}">
+                                <span>{{ p.jogador2.nome if p.jogador2 else '---' }}</span>
+                                {% if user_session.user_type == 'organizador' and not p.vencedor_id and p.jogador1 and p.jogador2 %}
+                                    <a href="{{ url_for('definir_vencedor', partida_id=p.id, vencedor_id=p.jogador2_id) }}" class="btn-win">Venceu</a>
+                                {% endif %}
+                                {% if p.vencedor_id == p.jogador2_id %}🏆{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        {% endif %}
+    </div>
+
+{% endblock %}

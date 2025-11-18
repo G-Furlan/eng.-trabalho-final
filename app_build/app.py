@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-# --- MUDANÇA: Importar o novo model ---
-from models import db, Jogador, Evento, Organizador, Inscricao 
+from models import db, Jogador, Evento, Organizador, Inscricao, Partida
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from datetime import datetime
+import math
 
-# --- Configuração do App (sem mudança) ---
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -15,12 +14,12 @@ db.init_app(app)
 with app.app_context():
     db.create_all()
 
-# --- Protetores de Rota (sem mudança) ---
+# --- Protetores ---
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
-            flash("Você precisa estar logado para acessar esta página.", "error")
+            flash("Você precisa estar logado.", "error")
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
@@ -29,23 +28,24 @@ def organizador_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get('user_type') != 'organizador':
-            flash("Acesso negado. Apenas organizadores podem fazer isso.", "error")
+            flash("Acesso negado.", "error")
             return redirect(url_for('lista_eventos'))
         return f(*args, **kwargs)
     return decorated_function
 
-# --- Rotas Principais / Login (sem mudança) ---
+# --- Rotas Básicas ---
 @app.route('/')
-def index():
-    return render_template('index.html')
-
+def index(): return render_template('index.html')
 @app.route('/login')
-def login():
-    return render_template('login.html')
+def login(): return render_template('login.html')
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('Você saiu.', 'info')
+    return redirect(url_for('index'))
 
 @app.route('/login_submit', methods=['POST'])
 def login_submit():
-    # ... (sem mudança) ...
     nome = request.form.get('nickname_login')
     senha = request.form.get('senha_login')
     usuario = Jogador.query.filter_by(nome=nome).first()
@@ -57,164 +57,52 @@ def login_submit():
         session['user_id'] = usuario.id
         session['user_name'] = usuario.nome
         session['user_type'] = tipo
-        flash(f'Login bem-sucedido como {usuario.nome}!', 'info')
-        if tipo == 'organizador':
-            return redirect(url_for('dashboard')) 
-        else:
-            return redirect(url_for('lista_eventos')) 
+        flash(f'Bem-vindo, {usuario.nome}!', 'info')
+        if tipo == 'organizador': return redirect(url_for('dashboard')) 
+        else: return redirect(url_for('lista_eventos')) 
     else:
-        flash('Nickname ou senha inválidos.', 'error')
+        flash('Dados inválidos.', 'error')
         return redirect(url_for('login'))
-
-@app.route('/logout')
-def logout():
-    # ... (sem mudança) ...
-    session.pop('user_id', None)
-    session.pop('user_name', None)
-    session.pop('user_type', None)
-    flash('Você saiu da sua conta.', 'info')
-    return redirect(url_for('index'))
 
 @app.route('/register', methods=['POST'])
 def register():
-    # ... (sem mudança) ...
-    tipo_usuario = request.form.get('tipo_usuario')
+    tipo = request.form.get('tipo_usuario')
     nome = request.form.get('nickname') 
     email = request.form.get('email')
     senha = request.form.get('senha')
     telefone = request.form.get('telefone')
     idade = request.form.get('idade')
-    jogador_existe = Jogador.query.filter_by(nome=nome).first()
-    org_existe = Organizador.query.filter_by(nome=nome).first()
-    if jogador_existe or org_existe:
-        flash("Erro: Esse nickname já está em uso.", "error")
+    if Jogador.query.filter_by(nome=nome).first() or Organizador.query.filter_by(nome=nome).first():
+        flash("Nickname já existe.", "error")
         return redirect(url_for('login'))
-    email_jogador_existe = Jogador.query.filter_by(email=email).first()
-    email_org_existe = Organizador.query.filter_by(email=email).first()
-    if email_jogador_existe or email_org_existe:
-        flash("Erro: Esse email já está em uso.", "error")
-        return redirect(url_for('login'))
-    hashed_senha = generate_password_hash(senha)
+    hashed = generate_password_hash(senha)
     try:
-        if tipo_usuario == 'jogador':
-            novo_usuario = Jogador(nome=nome, email=email, senha=hashed_senha, telefone=telefone, idade=idade)
-        elif tipo_usuario == 'organizador':
-            novo_usuario = Organizador(nome=nome, email=email, senha=hashed_senha, telefone=telefone, idade=idade)
-        else:
-            flash("Erro: Tipo de usuário inválido.", "error")
-            return redirect(url_for('login'))
-        db.session.add(novo_usuario)
+        if tipo == 'jogador': u = Jogador(nome=nome, email=email, senha=hashed, telefone=telefone, idade=idade)
+        else: u = Organizador(nome=nome, email=email, senha=hashed, telefone=telefone, idade=idade)
+        db.session.add(u)
         db.session.commit()
-        flash("Usuário criado com sucesso! Faça o login.", "info")
-        return redirect(url_for('login'))
-    except Exception as e:
-        db.session.rollback()
-        flash(f"Ocorreu um erro ao criar o usuário: {e}", "error")
-        return redirect(url_for('login'))
+        flash("Conta criada! Faça login.", "info")
+    except Exception as e: flash(f"Erro: {e}", "error")
+    return redirect(url_for('login'))
 
-# --- Rotas do Organizador (Dashboard) ---
+# --- Dashboard/Eventos ---
 @app.route('/dashboard')
 @login_required
 @organizador_required
 def dashboard():
-    # ... (sem mudança) ...
     org_id = session.get('user_id')
-    eventos_ativos = Evento.query.filter_by(organizador_id=org_id, status='Ativo').order_by(Evento.data.asc()).all()
-    eventos_finalizados = Evento.query.filter_by(organizador_id=org_id, status='Finalizado').order_by(Evento.data.desc()).all()
-    return render_template(
-        'dashboard.html', 
-        eventos_ativos=eventos_ativos,
-        eventos_finalizados=eventos_finalizados,
-        user_session=session
-    )
+    ativos = Evento.query.filter_by(organizador_id=org_id, status='Ativo').order_by(Evento.data.asc()).all()
+    finalizados = Evento.query.filter_by(organizador_id=org_id, status='Finalizado').order_by(Evento.data.desc()).all()
+    return render_template('dashboard.html', eventos_ativos=ativos, eventos_finalizados=finalizados, user_session=session)
 
 @app.route('/evento/criar')
 @login_required
 @organizador_required
-def criar_evento():
-    # ... (sem mudança) ...
-    return render_template('criar_evento.html')
-
-# --- CRUD Jogadores (sem mudança, rotas ocultas) ---
-@app.route('/jogadores')
-@login_required 
-def lista_jogadores():
-    jogadores = Jogador.query.all()
-    return render_template('jogador.html', jogadores=jogadores)
-@app.route('/jogador/novo', methods=['POST'])
-@login_required 
-@organizador_required 
-def novo_jogador():
-    nome = request.form.get('nome')
-    email = request.form.get('email')
-    if Jogador.query.filter_by(nome=nome).first() or Organizador.query.filter_by(nome=nome).first():
-        flash("Nickname já existe", "error")
-        return redirect(url_for('lista_jogadores'))
-    if Jogador.query.filter_by(email=email).first() or Organizador.query.filter_by(email=email).first():
-        flash("Email já existe", "error")
-        return redirect(url_for('lista_jogadores'))
-    hashed_senha = generate_password_hash(request.form.get('senha'))
-    jogador = Jogador(
-        nome=nome, email=email, idade=request.form.get('idade'),
-        telefone=request.form.get('telefone'), senha=hashed_senha
-    )
-    db.session.add(jogador)
-    db.session.commit()
-    return redirect(url_for('lista_jogadores'))
-@app.route('/jogador/delete/<int:id>')
-@login_required 
-@organizador_required 
-def excluir_jogador(id):
-    jogador = Jogador.query.filter_by(id=id).first() 
-    if jogador:
-        db.session.delete(jogador)
-        db.session.commit()
-    return redirect(url_for('lista_jogadores'))
-
-# -----------------------------
-# --- ROTAS DE EVENTO E INSCRIÇÃO ---
-# -----------------------------
-
-@app.route('/evento/detalhe/<int:id>')
-@login_required
-def evento_detalhe(id):
-    evento = Evento.query.get_or_404(id)
-    
-    # --- MUDANÇA: Checar se o jogador já está inscrito ---
-    is_inscrito = False # Começa como falso
-    if session.get('user_type') == 'jogador':
-        jogador_id = session.get('user_id')
-        # Procura no banco se a combinação jogador+evento existe
-        inscricao = Inscricao.query.filter_by(jogador_id=jogador_id, evento_id=evento.id).first()
-        if inscricao:
-            is_inscrito = True # Se achou, marca como verdadeiro
-            
-    return render_template(
-        'evento_detalhe.html', 
-        evento=evento, 
-        user_session=session,
-        is_inscrito=is_inscrito # Passa a informação (True/False) para o template
-    )
-
-@app.route('/evento/encerrar/<int:id>')
-@login_required
-@organizador_required
-def encerrar_evento(id):
-    # ... (sem mudança) ...
-    evento = Evento.query.get_or_404(id)
-    if evento.organizador_id != session.get('user_id'):
-        flash("Acesso negado. Você não é o dono deste evento.", "error")
-        return redirect(url_for('lista_eventos'))
-    evento.status = 'Finalizado'
-    db.session.commit()
-    flash(f'O evento "{evento.nome}" foi marcado como finalizado.', 'info')
-    return redirect(url_for('dashboard')) 
-
+def criar_evento(): return render_template('criar_evento.html')
 
 @app.route('/eventos')
 @login_required 
 def lista_eventos():
-    # ... (sem mudança) ...
     eventos = Evento.query.filter_by(status='Ativo').order_by(Evento.data.asc()).all() 
     return render_template('evento.html', eventos=eventos, user_session=session)
 
@@ -222,113 +110,255 @@ def lista_eventos():
 @login_required 
 @organizador_required 
 def novo_evento():
-    # ... (sem mudança) ...
-    org_id = session.get('user_id')
-    data_string = request.form['data'] 
-    data_objeto = None
-    if data_string:
-        try:
-            data_objeto = datetime.strptime(data_string, '%Y-%m-%d').date()
-        except ValueError:
-            flash("Formato de data inválido. Use AAAA-MM-DD.", "error")
-            return redirect(url_for('criar_evento'))
-    evento = Evento(
-        nome=request.form['nome'],
-        jogo=request.form['jogo'],
-        data=data_objeto, 
-        limite_jogadores=request.form['limite_jogadores'],
-        faixa_etaria=request.form['faixa_etaria'],
-        local=request.form['local'],
-        organizador_id=org_id 
+    try:
+        data = datetime.strptime(request.form['data'], '%Y-%m-%d').date() if request.form['data'] else None
+        hora = datetime.strptime(request.form['horario'], '%H:%M').time() if request.form['horario'] else None
+    except:
+        flash("Data/Hora inválida.", "error")
+        return redirect(url_for('criar_evento'))
+    
+    # MUDANÇA: Pegar o número de vagas do mata-mata
+    vagas = int(request.form.get('vagas_mata_mata', 4))
+    
+    e = Evento(
+        nome=request.form['nome'], jogo=request.form['jogo'], data=data, horario=hora,
+        descricao=request.form['descricao'], link_externo=request.form['link_externo'],
+        limite_jogadores=request.form['limite_jogadores'], faixa_etaria=request.form['faixa_etaria'],
+        local=request.form['local'], organizador_id=session.get('user_id'),
+        vagas_mata_mata=vagas # Salva a configuração
     )
-    db.session.add(evento)
+    db.session.add(e)
     db.session.commit()
     return redirect(url_for('dashboard'))
+
+@app.route('/evento/detalhe/<int:id>')
+@login_required
+def evento_detalhe(id):
+    evento = Evento.query.get_or_404(id)
+    is_inscrito = False
+    if session.get('user_type') == 'jogador':
+        if Inscricao.query.filter_by(jogador_id=session.get('user_id'), evento_id=evento.id).first():
+            is_inscrito = True
+    return render_template('evento_detalhe.html', evento=evento, user_session=session, is_inscrito=is_inscrito)
+
+@app.route('/evento/inscrever/<int:id>')
+@login_required
+def inscrever(id):
+    if session.get('user_type') != 'jogador': return redirect(url_for('evento_detalhe', id=id))
+    e = Evento.query.get_or_404(id)
+    uid = session.get('user_id')
+    if e.status != 'Ativo':
+        flash("Evento encerrado.", "error")
+        return redirect(url_for('evento_detalhe', id=id))
+    if Inscricao.query.filter_by(jogador_id=uid, evento_id=id).first(): return redirect(url_for('evento_detalhe', id=id))
+    if e.limite_jogadores and Inscricao.query.filter_by(evento_id=id).count() >= e.limite_jogadores:
+        flash("Vagas esgotadas.", "error")
+        return redirect(url_for('evento_detalhe', id=id))
+    db.session.add(Inscricao(jogador_id=uid, evento_id=id))
+    db.session.commit()
+    flash("Inscrito com sucesso!", "info")
+    return redirect(url_for('evento_detalhe', id=id))
+
+@app.route('/evento/cancelar/<int:id>')
+@login_required
+def cancelar_inscricao(id):
+    i = Inscricao.query.filter_by(jogador_id=session.get('user_id'), evento_id=id).first()
+    if i:
+        db.session.delete(i)
+        db.session.commit()
+        flash("Inscrição cancelada.", "info")
+    return redirect(url_for('evento_detalhe', id=id))
+
+# --- Gestão Avançada ---
+
+@app.route('/evento/inscricoes/<int:id>')
+@login_required
+def gerenciar_inscricoes(id):
+    e = Evento.query.get_or_404(id)
+    if e.fase_atual == 'Mata-Mata':
+        return redirect(url_for('visualizar_chaves', id=id))
+    if session.get('user_type') == 'organizador' and e.organizador_id != session.get('user_id'):
+         return redirect(url_for('dashboard'))
+    inscricoes = Inscricao.query.filter_by(evento_id=id).order_by(Inscricao.pontos.desc()).all()
+    return render_template('gerenciar_inscricoes.html', evento=e, inscricoes=inscricoes, total_inscritos=len(inscricoes))
+
+@app.route('/inscricao/pontuar/<int:id>', methods=['POST'])
+@login_required
+@organizador_required
+def pontuar_inscricao(id):
+    i = Inscricao.query.get_or_404(id)
+    if i.evento.organizador_id != session.get('user_id'): return redirect(url_for('dashboard'))
+    try:
+        i.pontos = int(request.form.get('pontos'))
+        db.session.commit()
+    except: flash("Erro ao salvar pontos.", "error")
+    return redirect(url_for('gerenciar_inscricoes', id=i.evento_id))
+
+# --- GERADOR DE CHAVES DINÂMICO (A MÁGICA) ---
+@app.route('/evento/gerar_mata_mata/<int:id>')
+@login_required
+@organizador_required
+def gerar_mata_mata(id):
+    e = Evento.query.get_or_404(id)
+    if e.organizador_id != session.get('user_id'): return redirect(url_for('dashboard'))
+    
+    vagas = e.vagas_mata_mata # Ex: 4, 8, 16...
+    
+    # 1. Pega os X melhores ativos
+    top_inscricoes = Inscricao.query.filter_by(evento_id=id, status_participacao='Ativo')\
+                                   .order_by(Inscricao.pontos.desc()).limit(vagas).all()
+    
+    if len(top_inscricoes) < vagas:
+        flash(f"Você precisa de pelo menos {vagas} jogadores ativos para gerar a chave.", "error")
+        return redirect(url_for('gerenciar_inscricoes', id=id))
+        
+    # 2. Algoritmo de Criação da Árvore (Do Final para o Início)
+    # Exemplo para 4 jogadores:
+    # Nível 0: Final (1 jogo)
+    # Nível 1: Semis (2 jogos) -> Alimentam a Final
+    
+    # Vamos criar "rodadas".
+    # rodada_final (1 jogo)
+    # rodada_semi (2 jogos)
+    # rodada_quartas (4 jogos)
+    
+    total_rodadas = int(math.log2(vagas)) # Ex: log2(8) = 3 rodadas
+    proximas_partidas = [] # Lista de partidas da rodada "de cima" para linkar
+    
+    partidas_criadas = []
+    ordem_global = 100 # Para ordenar visualmente
+    
+    # Loop reverso: Cria a Final, depois as Semis, depois as Quartas...
+    for r in range(total_rodadas):
+        # r=0 -> Final (1 jogo)
+        # r=1 -> Semis (2 jogos)
+        qtd_jogos_na_rodada = 2**r
+        jogos_dessa_rodada = []
+        
+        nome_rodada = "Eliminatória"
+        if r == 0: nome_rodada = "Grande Final"
+        elif r == 1: nome_rodada = "Semifinais"
+        elif r == 2: nome_rodada = "Quartas de Final"
+        elif r == 3: nome_rodada = "Oitavas de Final"
+        
+        for i in range(qtd_jogos_na_rodada):
+            # Se r>0 (não é a final), precisamos saber pra onde o vencedor vai
+            # O vencedor do jogo 'i' e 'i+1' da rodada atual vão para o jogo 'i//2' da rodada anterior
+            prox_id = None
+            if r > 0:
+                # Pega o ID da partida "pai" (que criamos no loop anterior)
+                index_pai = i // 2
+                prox_id = proximas_partidas[index_pai].id
+            
+            partida = Partida(
+                evento_id=id,
+                rodada=nome_rodada,
+                ordem=ordem_global, # Ordem decrescente para exibir Final no fim da lista
+                proxima_partida_id=prox_id
+            )
+            db.session.add(partida)
+            db.session.flush() # Garante que o ID seja gerado agora
+            
+            jogos_dessa_rodada.append(partida)
+            partidas_criadas.append(partida)
+            ordem_global -= 1
+            
+        # As partidas criadas agora viram as "próximas" para o próximo loop
+        proximas_partidas = jogos_dessa_rodada
+
+    # 3. Preencher a Primeira Rodada (A última criada no loop) com os Jogadores
+    # A lista 'proximas_partidas' agora contém os jogos da PRIMEIRA RODADA (ex: Quartas)
+    primeira_rodada = proximas_partidas 
+    
+    # Ordenação Seed (1º vs Último, 2º vs Penúltimo...)
+    # Exemplo 8 vagas: Jogo A (1 vs 8), Jogo B (4 vs 5), Jogo C (2 vs 7), Jogo D (3 vs 6)
+    # Para simplificar e não bugar a cabeça: Vamos fazer pareamento sequencial nas chaves
+    # Jogo 1: 1º vs 2º (Para simplificar visualização)
+    # OU Pareamento Olímpico Simples:
+    # Lista: [1, 2, 3, 4, 5, 6, 7, 8]
+    # Match 1: 1 vs 8
+    # Match 2: 2 vs 7 ...
+    
+    # Vamos usar pareamento olímpico clássico (1 vs N)
+    qtd_jogos = len(primeira_rodada)
+    
+    for i in range(qtd_jogos):
+        partida = primeira_rodada[i]
+        
+        # Topo da lista
+        jogador_top = top_inscricoes[i].jogador_id 
+        # Fundo da lista
+        jogador_bottom = top_inscricoes[vagas - 1 - i].jogador_id
+        
+        partida.jogador1_id = jogador_top
+        partida.jogador2_id = jogador_bottom
+    
+    db.session.commit()
+    
+    e.fase_atual = 'Mata-Mata'
+    db.session.commit()
+    
+    flash(f"Chaves geradas com sucesso para {vagas} jogadores!", "info")
+    return redirect(url_for('visualizar_chaves', id=id))
+
+@app.route('/evento/chaves/<int:id>')
+@login_required
+def visualizar_chaves(id):
+    e = Evento.query.get_or_404(id)
+    # Ordena por ordem crescente (criamos decrescente, entao invertemos pra mostrar da 1a rodada pra final)
+    partidas = Partida.query.filter_by(evento_id=id).order_by(Partida.id.desc()).all()
+    return render_template('chaves.html', evento=e, partidas=partidas, user_session=session)
+
+@app.route('/partida/vencedor/<int:partida_id>/<int:vencedor_id>')
+@login_required
+@organizador_required
+def definir_vencedor(partida_id, vencedor_id):
+    partida = Partida.query.get_or_404(partida_id)
+    evento = partida.evento
+    if evento.organizador_id != session.get('user_id'): return redirect(url_for('dashboard'))
+    
+    partida.vencedor_id = vencedor_id
+    db.session.commit()
+    
+    # --- LÓGICA DE AVANÇO DINÂMICA ---
+    if partida.proxima_partida_id:
+        prox = Partida.query.get(partida.proxima_partida_id)
+        if prox:
+            # Preenche o primeiro slot vazio que achar
+            if prox.jogador1_id is None:
+                prox.jogador1_id = vencedor_id
+            elif prox.jogador2_id is None:
+                prox.jogador2_id = vencedor_id
+            db.session.commit()
+            flash("Vencedor avançou para a próxima fase!", "info")
+    else:
+        # Se não tem próxima partida, é a FINAL
+        flash(f"Temos um campeão! O evento {evento.nome} foi concluído.", "info")
+
+    return redirect(url_for('visualizar_chaves', id=evento.id))
 
 @app.route('/evento/delete/<int:id>')
 @login_required 
 @organizador_required 
 def excluir_evento(id):
-    # ... (sem mudança) ...
     evento = Evento.query.filter_by(id=id).first() 
     if evento:
-        if evento.organizador_id != session.get('user_id'):
-            flash("Acesso negado. Você não é o dono deste evento.", "error")
-            return redirect(url_for('lista_eventos'))
+        if evento.organizador_id != session.get('user_id'): return redirect(url_for('lista_eventos'))
+        Partida.query.filter_by(evento_id=id).delete()
+        Inscricao.query.filter_by(evento_id=id).delete()
         db.session.delete(evento)
         db.session.commit()
-    if request.referrer and 'dashboard' in request.referrer:
-        return redirect(url_for('dashboard'))
-    else:
-        return redirect(url_for('lista_eventos'))
+    return redirect(url_for('dashboard'))
 
-# ------------------------------------
-# --- MUDANÇA: NOVAS ROTAS DO JOGADOR ---
-# ------------------------------------
-
-@app.route('/evento/inscrever/<int:id>')
+@app.route('/evento/encerrar/<int:id>')
 @login_required
-def inscrever(id):
-    # 1. Checa se o usuário é um Jogador (como você pediu!)
-    if session.get('user_type') != 'jogador':
-        flash("Apenas jogadores podem se inscrever em eventos.", "error")
-        return redirect(url_for('evento_detalhe', id=id))
-
+@organizador_required
+def encerrar_evento(id):
     evento = Evento.query.get_or_404(id)
-    jogador_id = session.get('user_id')
-
-    # 2. Checa se o evento ainda está Ativo
-    if evento.status != 'Ativo':
-        flash("Este evento não está mais aceitando inscrições.", "error")
-        return redirect(url_for('evento_detalhe', id=id))
-
-    # 3. Checa se ele já não está inscrito
-    inscricao_existente = Inscricao.query.filter_by(jogador_id=jogador_id, evento_id=evento.id).first()
-    if inscricao_existente:
-        flash("Você já está inscrito neste evento.", "info")
-        return redirect(url_for('evento_detalhe', id=id))
-        
-    # 4. (Opcional, mas bom) Checar limite de jogadores
-    if evento.limite_jogadores:
-        # Conta quantas inscrições o evento já tem
-        total_inscritos = Inscricao.query.filter_by(evento_id=evento.id).count()
-        if total_inscritos >= evento.limite_jogadores:
-            flash("Inscrições esgotadas! O limite de jogadores foi atingido.", "error")
-            return redirect(url_for('evento_detalhe', id=id))
-
-    # 5. Se tudo estiver OK, cria a inscrição
-    nova_inscricao = Inscricao(jogador_id=jogador_id, evento_id=evento.id)
-    db.session.add(nova_inscricao)
+    if evento.organizador_id != session.get('user_id'): return redirect(url_for('lista_eventos'))
+    evento.status = 'Finalizado'
     db.session.commit()
+    return redirect(url_for('dashboard'))
 
-    flash(f'Inscrição confirmada no evento "{evento.nome}"!', 'info')
-    return redirect(url_for('evento_detalhe', id=id))
-
-
-@app.route('/evento/cancelar/<int:id>')
-@login_required
-def cancelar_inscricao(id):
-    # 1. Checa se é jogador
-    if session.get('user_type') != 'jogador':
-        flash("Apenas jogadores podem cancelar inscrições.", "error")
-        return redirect(url_for('evento_detalhe', id=id))
-
-    evento = Evento.query.get_or_404(id)
-    jogador_id = session.get('user_id')
-
-    # 2. Encontra a inscrição
-    inscricao = Inscricao.query.filter_by(jogador_id=jogador_id, evento_id=evento.id).first()
-    
-    # 3. Se ela existir, apaga
-    if inscricao:
-        db.session.delete(inscricao)
-        db.session.commit()
-        flash("Sua inscrição foi cancelada.", "info")
-    else:
-        flash("Você não estava inscrito neste evento.", "error")
-
-    return redirect(url_for('evento_detalhe', id=id))
-
-# --- Comando para Rodar o App ---
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,599 +1,207 @@
-/* Importa a fonte nova (mais arredondada) */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+/* --- 1. FONTE E VARIÁVEIS GLOBAIS --- */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
-/* Variáveis de Cor */
 :root {
-    --cor-principal: #E63946; /* Vermelho forte */
-    --cor-fundo: #FFFFFF;     /* Branco */
-    --cor-texto: #333333;      /* Cinza escuro */
-    --cor-borda: #DDDDDD;     /* Cinza claro */
-    --cor-destaque: #2A2D34; /* Cinza Chumbo */
-    --sombra: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --cor-principal: #E63946;       /* Vermelho forte */
+    --cor-principal-dark: #c9303c;  /* Vermelho escuro (hover) */
+    --cor-fundo: #F9FAFB;           /* Fundo cinza bem claro */
+    --cor-card: #FFFFFF;            /* Branco puro para cards */
+    --cor-texto: #1F2937;           /* Cinza quase preto */
+    --cor-borda: #E5E7EB;           /* Cinza claro para bordas */
+    --cor-destaque: #111827;        /* Preto azulado (headers/botões dark) */
+    --sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --sombra-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/* Reset básico e fonte principal */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Nunito', sans-serif; /* Nova fonte */
+    font-family: 'Nunito', sans-serif;
     background-color: var(--cor-fundo);
     color: var(--cor-texto);
     line-height: 1.6;
 }
 
-.container {
-    max-width: 1200px; /* Um pouco mais largo para a home */
-    margin: 0 auto;
-    padding: 0 20px;
-}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-/* --- Títulos --- */
-h1, h2, h3 {
-    font-weight: 700;
-}
+h1, h2, h3 { font-weight: 800; color: var(--cor-principal); margin-bottom: 20px; }
 
-h1, h2 {
-    color: var(--cor-principal); /* Títulos em vermelho */
-    margin-bottom: 20px;
-}
-
-/* --- Botões Base --- */
-.btn {
-    display: inline-block;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    font-weight: 600;
-    font-size: 1rem;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-primary {
-    background-color: var(--cor-principal);
-    color: var(--cor-fundo);
-}
-.btn-primary:hover {
-    background-color: #c9303c;
-    transform: translateY(-2px);
-}
-
-.btn-secondary {
-    background-color: var(--cor-fundo); /* Branco */
-    color: var(--cor-destaque); /* Cinza Chumbo */
-}
-.btn-secondary:hover {
-    background-color: #f0f0f0;
-    transform: translateY(-2px);
-}
-
-/* --- Estilos da Home Page (index.html) --- */
-
-.home-page {
-    padding: 0;
-    margin: 0;
-}
-
-/* Header da Home (Agora branco, não mais transparente) */
-.header-home {
-    width: 100%;
-    padding: 20px 0;
-    background: var(--cor-fundo); /* Fundo branco */
-    border-bottom: 2px solid var(--cor-borda);
-    /* Removido: position: absolute */
-}
-
-.header-home .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo-home {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--cor-principal); /* Letra vermelha */
-    text-decoration: none;
-}
-
-.btn-login {
-    background: var(--cor-principal); /* Vermelho */
-    color: var(--cor-fundo);
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: background 0.3s ease;
-}
-
-.btn-login:hover {
-    background: #c9303c;
-}
-
-/* Hero Section (Imagem de Fundo) */
-.hero-section {
-    /* Altura = 100% da tela MENOS o tamanho do header */
-    min-height: calc(100vh - 74px); 
-    width: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Centraliza o conteúdo verticalmente */
-    color: var(--cor-fundo);
-    
-    /* IMAGEM DE FUNDO - TROQUE ESSE LINK! */
-    /* Deixei o filtro escuro mais fraco (0.4) */
-    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-                      url('https://placehold.co/1920x1080/E63946/FFFFFF?text=Troque-me!+(1920x1080)');
-    background-size: cover;
-    background-position: center center;
-}
-
-/* Conteúdo Hero (Novo layout: Esquerda/Direita) */
-.hero-content {
-    display: flex;
-    justify-content: space-between; /* Espaço entre os itens */
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Coluna da Esquerda (Botões) */
-.hero-call-to-action {
-    width: 100%;
-    max-width: 450px;
-}
-
-.hero-call-to-action .btn {
-    display: block; /* Botões um em cima do outro */
-    width: 100%;
-    margin-bottom: 15px;
-    text-align: center;
-    padding: 15px;
-    font-size: 1.1rem;
-}
-
-/* Coluna da Direita (Texto) */
-.hero-text-box {
-    background: rgba(42, 45, 52, 0.7); /* Fundo cinza-chumbo semi-transparente */
-    backdrop-filter: blur(5px);
-    border-radius: 8px;
-    padding: 40px;
-    width: 100%;
-    max-width: 450px; /* Largura da caixa de texto */
-    text-align: left;
-}
-
-.hero-text-box h2 {
-    font-size: 2.2rem;
-    color: var(--cor-fundo); /* Branco */
-    margin-bottom: 0; /* Tiramos os botões daqui */
-    line-height: 1.3;
-}
-
-
-/* --- Estilos do Header Interno (base.html) --- */
-header.header-internal {
-    background: var(--cor-fundo);
-    border-bottom: 2px solid var(--cor-borda);
-    padding: 20px 0;
+/* --- 2. HEADER E NAVEGAÇÃO --- */
+.header-home, header.header-internal {
+    background: var(--cor-card);
+    border-bottom: 1px solid var(--cor-borda);
+    padding: 15px 0;
     margin-bottom: 30px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
-header.header-internal .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.header-home .container, header.header-internal .container {
+    display: flex; justify-content: space-between; align-items: center;
 }
-header.header-internal .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--cor-principal); /* Logo em vermelho */
+
+/* Correção do Logo */
+.logo-home, .logo {
+    font-size: 1.5rem; 
+    font-weight: 800; 
+    color: var(--cor-principal); 
     text-decoration: none;
+    display: inline-block;
+    transition: transform 0.2s ease;
 }
-header.header-internal nav a {
-    color: var(--cor-texto);
-    text-decoration: none;
-    font-weight: 600;
-    margin-left: 20px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-header.header-internal nav a:hover,
-header.header-internal nav a.active {
-    background-color: var(--cor-principal);
-    color: var(--cor-fundo);
-}
+.logo-home:hover, .logo:hover { transform: scale(1.05); }
 
+nav { display: flex; align-items: center; }
+nav a {
+    color: var(--cor-texto); text-decoration: none; font-weight: 700; 
+    margin-left: 20px; transition: color 0.2s;
+}
+nav a:hover { color: var(--cor-principal); }
 
-/* --- Estilos da Página de Login (login.html) --- */
-.login-page {
-    background-color: #f4f4f4; /* Fundo cinza claro */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-}
+.nav-welcome { margin-left: 20px; color: var(--cor-destaque); font-weight: 600; }
 
-.login-container {
-    background: var(--cor-fundo);
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: var(--sombra);
-    width: 100%;
-    max-width: 450px;
-    text-align: center;
+.nav-dashboard-link {
+    color: var(--cor-principal); border: 1px solid var(--cor-principal); 
+    padding: 6px 12px; border-radius: 6px; display: inline-block;
 }
+.nav-dashboard-link:hover { background: var(--cor-principal); color: #fff; }
 
-.login-logo {
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--cor-principal);
-    text-decoration: none;
-    margin-bottom: 10px;
-    display: block;
+/* --- 3. BOTÕES GERAIS --- */
+.btn {
+    display: inline-block; padding: 10px 20px; border: none; border-radius: 8px;
+    font-weight: 700; font-size: 0.95rem; text-decoration: none; cursor: pointer;
+    transition: all 0.2s ease; text-align: center;
 }
+.btn:active { transform: translateY(1px); }
 
-.login-container h2 {
-    font-size: 1.5rem;
-    color: var(--cor-texto);
-    margin-bottom: 20px;
-}
+.btn-primary { background-color: var(--cor-principal); color: #fff; }
+.btn-primary:hover { background-color: var(--cor-principal-dark); transform: translateY(-2px); }
 
-.login-form .form-group {
-    text-align: left;
-    margin-bottom: 15px;
-}
-.login-form .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 600;
-}
+.btn-secondary { background-color: #fff; color: var(--cor-destaque); border: 1px solid var(--cor-borda); }
+.btn-secondary:hover { background-color: #f3f4f6; }
 
-/* Estilo para o <select> e <input> no form */
-.form-group select,
-.form-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--cor-borda);
-    border-radius: 5px;
-    font-family: 'Nunito', sans-serif; /* Fonte nova aqui tbm */
-    font-size: 1rem;
-    /* margin-top: 5px; (removido, o label já tem margin-bottom) */
-}
+.btn-encerrar { background-color: var(--cor-destaque); color: #fff; margin-right: 10px; }
+.btn-encerrar:hover { background-color: #000; }
 
-.btn-full-width {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.1rem;
-    margin-top: 10px;
-}
+.btn-delete, .btn-cancelar { background-color: #dc2626; color: #fff; font-size: 0.9rem; padding: 8px 16px; }
+.btn-delete:hover, .btn-cancelar:hover { background-color: #b91c1c; }
 
-.login-footer {
-    margin-top: 20px;
-    font-size: 0.9rem;
-    color: #777;
+/* Botões Específicos do Menu */
+.btn-login, .btn-login-nav { 
+    background: var(--cor-principal); color: #fff !important; 
+    padding: 8px 16px; border-radius: 6px; display: inline-block;
 }
-.login-footer a {
-    color: var(--cor-principal);
-    text-decoration: none;
-    font-weight: 600;
-}
-
-/* Mensagem de flash (feedback) */
-.flash-message {
-    padding: 15px;
-    background: #e0f0ff;
-    border: 1px solid #b3d4ff;
-    color: #0056b3;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-/* --- Estilos dos Formulários Internos (jogador/evento) --- */
-.form-wrapper {
-    background: #fdfdfd;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: var(--sombra);
-    margin-bottom: 40px;
-}
-
-.form-wrapper .form-group {
-    margin-bottom: 15px;
-}
-
-.form-wrapper .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 600;
-}
-
-.form-wrapper .form-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--cor-borda);
-    border-radius: 5px;
-    font-family: 'Nunito', sans-serif; /* Fonte nova aqui tbm */
-    font-size: 1rem;
-}
-
-/* --- Estilos das Listas Internas (jogador/evento) --- */
-.list-wrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.card {
-    background: var(--cor-fundo);
-    border: 1px solid var(--cor-borda);
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: var(--sombra);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-.card h3 {
-    margin-bottom: 10px;
-    color: var(--cor-texto);
-}
-
-.card p {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 15px;
-}
-
-.btn-delete {
-    color: var(--cor-principal);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.btn-delete:hover {
-    text-decoration: underline;
-}
-
-/* --- ADICIONE ESTE BLOCO NO FINAL DO SEU STYLE.CSS --- */
-
-/* --- Estilos para o Menu Logado (base.html) --- */
-.nav-welcome {
-    margin-left: 20px;
-    color: var(--cor-destaque);
-    font-weight: 600;
-}
+.btn-login:hover, .btn-login-nav:hover { background: var(--cor-principal-dark); transform: translateY(-1px); }
 
 .btn-logout {
-    background: var(--cor-destaque);
-    color: var(--cor-fundo);
-    font-weight: 600;
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-left: 10px;
-    transition: all 0.3s ease;
+    background: var(--cor-destaque); color: #fff !important; 
+    font-weight: 600; text-decoration: none; padding: 6px 12px; 
+    border-radius: 6px; margin-left: 10px; display: inline-block;
 }
-.btn-logout:hover {
-    background: #000;
-}
+.btn-logout:hover { background: #000; transform: translateY(-1px); }
 
-.btn-login-nav {
-    background: var(--cor-principal);
-    color: var(--cor-fundo);
-    font-weight: 600;
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    margin-left: 20px;
+/* --- 4. FORMULÁRIOS --- */
+.form-wrapper, .login-container {
+    background: var(--cor-card); padding: 30px; border-radius: 12px;
+    box-shadow: var(--sombra); margin-bottom: 40px; width: 100%;
 }
+.login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #f3f4f6; }
+.login-container { max-width: 420px; text-align: center; }
 
-/* --- Estilos para Mensagens Flash (login.html) --- */
-/* Remove a cor de fundo padrão (azul) */
-.flash-message {
-    padding: 15px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    font-weight: 600;
-    border: 1px solid transparent;
+.form-group { margin-bottom: 20px; text-align: left; }
+.form-group label { display: block; margin-bottom: 8px; font-weight: 700; }
+.form-group input, .form-group select, textarea.form-control {
+    width: 100%; padding: 12px; border: 1px solid var(--cor-borda); border-radius: 8px;
+    font-family: inherit; font-size: 1rem; outline: none;
 }
-/* Categoria 'info' (Azul/Verde) */
-.flash-info {
-    background: #e0f0ff;
-    border-color: #b3d4ff;
-    color: #0056b3;
-}
-/* Categoria 'error' (Vermelho) */
-.flash-error {
-    background: #fde8e8;
-    border-color: #fabdbd;
-    color: #9c2a2a;
-}
+.form-group input:focus { border-color: var(--cor-principal); box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1); }
+.btn-full-width { width: 100%; }
+.login-footer { margin-top: 20px; font-size: 0.9rem; color: #777; }
 
-/* --- ADICIONE ESTE BLOCO NO FINAL DO SEU STYLE.CSS --- */
+/* --- 5. LISTAS, CARDS E CALENDÁRIO --- */
+.list-wrapper, .calendar-grid { 
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; 
+}
+.card, .calendar-card {
+    background: var(--cor-card); border: 1px solid var(--cor-borda); border-radius: 12px;
+    padding: 25px; box-shadow: var(--sombra); transition: transform 0.2s; overflow: hidden;
+}
+.calendar-card { display: flex; padding: 0; } /* Reset padding for calendar flex */
 
-/* Link do "Meu Dashboard" no menu */
-.nav-dashboard-link {
-    font-weight: 700;
-    color: var(--cor-principal);
-    text-decoration: none;
-    margin-left: 20px;
-    padding: 5px 10px;
-    border: 1px solid var(--cor-principal);
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
-.nav-dashboard-link:hover {
-    background: var(--cor-principal);
-    color: var(--cor-fundo);
-}
+.card:hover, .calendar-card:hover { transform: translateY(-4px); box-shadow: var(--sombra-hover); }
+.card h3 { margin-bottom: 10px; font-size: 1.25rem; }
+.card-actions { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--cor-borda); display: flex; justify-content: space-between; align-items: center; }
 
-/* Cabeçalho do Dashboard */
-.dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--cor-borda);
-    padding-bottom: 20px;
+/* Estilo do Calendário */
+.calendar-date {
+    background: var(--cor-principal); color: #fff; width: 80px; 
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
-.dashboard-header h2 {
-    margin-bottom: 0;
-}
+.calendar-date .day { font-size: 2rem; font-weight: 800; line-height: 1; }
+.calendar-date .month { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; }
+.calendar-content { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+.calendar-badges { margin-bottom: 10px; display: flex; gap: 10px; font-size: 0.8rem; font-weight: 700; }
+.badge-game { background: #f3f4f6; padding: 4px 8px; border-radius: 4px; color: #333; }
 
-/* Ações do Card (para "Gerenciar" e "Excluir") */
-.card-actions {
-    margin-top: 15px;
-    border-top: 1px solid var(--cor-borda);
-    padding-top: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.btn-calendar-action { 
+    margin-top: auto; text-align: center; background: transparent; 
+    border: 2px solid var(--cor-principal); color: var(--cor-principal); 
+    padding: 6px; border-radius: 6px; font-weight: 700; text-decoration: none; 
+    display: block; transition: all 0.2s;
 }
+.btn-calendar-action:hover { background: var(--cor-principal); color: #fff; }
 
-.btn-card-edit {
-    background: var(--cor-destaque);
-    color: var(--cor-fundo);
-    padding: 5px 10px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
+/* --- 6. TABELAS E GESTÃO --- */
+.inscritos-table {
+    width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff;
+    border-radius: 8px; overflow: hidden; box-shadow: var(--sombra);
 }
-.btn-card-edit:hover {
-    background: #000;
-}
+.inscritos-table th { background: #f3f4f6; padding: 15px; text-align: left; border-bottom: 2px solid var(--cor-borda); }
+.inscritos-table td { padding: 15px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+.row-classificado { background-color: #ecfdf5; }
 
-.btn-card-participar {
-    background: var(--cor-principal);
-    color: var(--cor-fundo);
-    padding: 8px 12px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    display: inline-block;
-    margin-top: 10px;
+.rank-badge {
+    display: inline-block; width: 26px; height: 26px; background: #9ca3af; color: #fff;
+    border-radius: 50%; text-align: center; line-height: 26px; font-weight: bold; font-size: 0.85rem;
 }
-.btn-card-participar:hover {
-    background: #c9303c;
-}
+.rank-top { background: #10b981; }
+.input-pontos { width: 70px; padding: 6px; text-align: center; border: 1px solid var(--cor-borda); border-radius: 6px; }
+.btn-icon-save { background: none; border: none; cursor: pointer; font-size: 1.2rem; margin-left: 5px; }
+.btn-card-edit { background: var(--cor-destaque); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; text-decoration: none; display: inline-block; }
 
-/* --- ADICIONE ESTE BLOCO NO FINAL DO SEU STYLE.CSS --- */
+.status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+.status-ativo { background: #d1fae5; color: #065f46; }
+.status-eliminado { background: #fee2e2; color: #991b1b; }
+.status-vencedor { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+.btn-action { font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; color: #fff; text-decoration: none; display: inline-block; margin-right: 5px; }
+.btn-eliminar { background-color: #ef4444; }
+.btn-vencedor { background-color: #f59e0b; color: #000; }
+.btn-reativar { background-color: #6b7280; }
 
-/* Estilos da Página de Detalhe do Evento */
-.detalhe-evento-wrapper {
-    background: var(--cor-fundo);
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: var(--sombra);
+/* --- 7. CHAVES (BRACKET) --- */
+.bracket-container { padding: 30px 0; overflow-x: auto; }
+.bracket-grid { display: flex; gap: 40px; align-items: center; justify-content: center; }
+.match-card {
+    background: #fff; border: 1px solid var(--cor-borda); border-radius: 8px; width: 260px;
+    box-shadow: var(--sombra); display: flex; flex-direction: column; position: relative;
 }
+.match-final { border: 2px solid #fbbf24; transform: scale(1.1); z-index: 10; }
+.match-header { background: #f9fafb; padding: 8px; text-align: center; font-weight: 700; border-bottom: 1px solid var(--cor-borda); font-size: 0.85rem; }
+.match-players { padding: 10px; }
+.player-row { display: flex; justify-content: space-between; padding: 8px; border-radius: 6px; margin-bottom: 4px; align-items: center; }
+.player-row.winner { background-color: #d1fae5; font-weight: 700; }
+.btn-win { font-size: 0.7rem; background: var(--cor-principal); color: #fff; padding: 2px 8px; border-radius: 4px; text-decoration: none; }
+.btn-win:hover { background: var(--cor-principal-dark); }
 
-.detalhe-header {
-    border-bottom: 2px solid var(--cor-borda);
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+/* --- 8. EXTRAS --- */
+.hero-section {
+    min-height: 80vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(230, 57, 70, 0.8)), url('https://placehold.co/1920x1080/111/FFF');
+    background-size: cover; color: #fff;
 }
-.detalhe-header h1 {
-    color: var(--cor-principal);
-    margin-bottom: 0;
-}
+.hero-content { display: flex; justify-content: space-between; width: 100%; max-width: 1200px; padding: 0 20px; align-items: center; }
+.hero-text-box { max-width: 500px; }
+.hero-text-box h2 { color: #fff; font-size: 2.5rem; }
+.hero-call-to-action .btn { display: block; width: 100%; margin-bottom: 10px; text-align: center; }
 
-.detalhe-body p {
-    font-size: 1.1rem;
-    color: #555;
-    margin-bottom: 10px;
-}
-.detalhe-body p strong {
-    color: var(--cor-texto);
-}
-
-.detalhe-actions {
-    margin-top: 30px;
-    border-top: 2px solid var(--cor-borda);
-    padding-top: 20px;
-}
-
-.btn-encerrar {
-    background-color: var(--cor-destaque);
-    color: var(--cor-fundo);
-    margin-right: 10px;
-}
-.btn-encerrar:hover {
-    background-color: #000;
-}
-
-.evento-finalizado-msg {
-    font-weight: 600;
-    color: var(--cor-principal);
-}
-
-/* Estilos de STATUS (Ativo/Finalizado) */
-.evento-status {
-    font-weight: 700;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    color: #fff;
-}
-.status-ativo {
-    background-color: #28a745; /* Verde */
-}
-.status-finalizado {
-    background-color: #6c757d; /* Cinza */
-}
-
-/* Divisor do Dashboard */
-hr.section-divider {
-    border: none;
-    border-top: 2px solid var(--cor-borda);
-    margin: 40px 0;
-}
-
-/* Card de Evento Finalizado (Dashboard) */
-.card-finalizado {
-    background-color: #f8f9fa; /* Um cinza leve */
-    opacity: 0.8;
-}
-.card-finalizado h3 {
-    color: #6c757d;
-}
-
-/* --- ADICIONE ESTE BLOCO NO FINAL DO SEU STYLE.CSS --- */
-
-/* Botão de Cancelar Inscrição (vermelho) */
-.btn-cancelar {
-    display: inline-block;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    font-weight: 600;
-    font-size: 1rem;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: var(--cor-principal); /* Vermelho */
-    color: var(--cor-fundo);
-}
-.btn-cancelar:hover {
-    background-color: #c9303c;
-    transform: translateY(-2px);
-}
+.flash-message { padding: 15px; margin-bottom: 20px; border-radius: 8px; font-weight: 600; }
+.flash-info { background: #eff6ff; color: #1e40af; border: 1px solid #dbeafe; }
+.flash-error { background: #fef2f2; color: #991b1b; border: 1px solid #fee2e2; }

@@ -1,35 +1,50 @@
-<!-- templates/evento.html -->
 {% extends 'base.html' %}
 
 {% block content %}
     
-    <h2>Eventos da Comunidade</h2>
-    <p>Próximos eventos ativos organizados pela comunidade.</p>
+    <div class="calendar-header">
+        <h2>📅 Calendário de Eventos</h2>
+        <p>Confira os próximos torneios e garanta sua vaga!</p>
+    </div>
     
-    <div class="list-wrapper" style="margin-top: 20px;">
+    <!-- MUDANÇA: Usando um grid de calendário -->
+    <div class="calendar-grid">
         
-        <!-- 'eventos' aqui só tem os "Ativos" (definido no app.py) -->
         {% if not eventos %}
-            <p>Nenhum evento agendado no momento.</p>
+            <div class="empty-state-calendar">
+                <p>Nenhum evento agendado no momento.</p>
+            </div>
         {% endif %}
 
         {% for e in eventos %}
-            <div class="card">
-                <h3>{{ e.nome }}</h3>
-                <p>Jogo: {{ e.jogo }}</p>
-                <!-- O '.strftime' formata a data para DD/MM/AAAA -->
-                <p>Data: {{ e.data.strftime('%d/%m/%Y') }}</p>
-                <p>Organizado por: <strong>{{ e.organizador.nome }}</strong></p>
+            <div class="calendar-card">
+                
+                <!-- A "Folhinha" de Data -->
+                <div class="calendar-date">
+                    <span class="day">{{ e.data.strftime('%d') }}</span>
+                    <span class="month">{{ e.data.strftime('%b').upper() }}</span>
+                </div>
 
-                <!-- MUDANÇA: O botão "Ver Detalhes" agora funciona! -->
-                <a href="{{ url_for('evento_detalhe', id=e.id) }}" class="btn-card-participar">Ver Detalhes</a> 
+                <!-- O Conteúdo do Evento -->
+                <div class="calendar-content">
+                    <div class="calendar-badges">
+                        <span class="badge-game">{{ e.jogo }}</span>
+                        <span class="badge-time">⏰ {{ e.horario.strftime('%H:%M') }}</span>
+                    </div>
+                    
+                    <h3>{{ e.nome }}</h3>
+                    
+                    <p class="organizer">por {{ e.organizador.nome }}</p>
+                    
+                    <!-- Informações Extras (Local e Vagas) -->
+                    <div class="calendar-info">
+                        <span>📍 {{ e.local }}</span>
+                        <span>👥 {{ e.limite_jogadores or 'Ilimitado' }} vagas</span>
+                    </div>
 
-                <!-- 
-                    ==================================
-                    === BOTÃO EXCLUIR REMOVIDO DAQUI ===
-                    ==================================
-                -->
-                <!-- O 'if' de excluir foi removido, como você pediu -->
+                    <!-- Botão de Ação -->
+                    <a href="{{ url_for('evento_detalhe', id=e.id) }}" class="btn-calendar-action">Ver Detalhes</a> 
+                </div>
             </div>
         {% endfor %}
     </div>
