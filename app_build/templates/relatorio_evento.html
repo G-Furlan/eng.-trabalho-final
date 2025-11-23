@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="detalhe-header">
+    <div>
+        <h2>Relatório Final: {{ evento.nome }}</h2>
+        <p>O torneio foi concluído com sucesso.</p>
+    </div>
+    <div>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Voltar ao Dashboard</a>
+        <a href="{{ url_for('visualizar_chaves', id=evento.id) }}" class="btn btn-primary">Ver Chaves</a>
+    </div>
+</div>
+
+<div class="hero-section" style="min-height: 300px; background: linear-gradient(135deg, #E63946 0%, #111827 100%); border-radius: 12px; margin-bottom: 40px;">
+    <div class="hero-content" style="flex-direction: column; text-align: center;">
+        
+        <h2 style="font-size: 1.5rem; margin-bottom: 10px;">O GRANDE CAMPEÃO</h2>
+        
+        {% if campeao %}
+            <div class="perfil-avatar" style="width: 120px; height: 120px; font-size: 4rem; margin: 0 auto 20px auto; background: #fbbf24; color: #000; box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);">
+                {{ campeao.nome[0].upper() }}
+            </div>
+            <h1 style="font-size: 3rem; margin-bottom: 0;">{{ campeao.nome }}</h1>
+            <p style="font-size: 1.2rem; opacity: 0.9;">{{ campeao.email }}</p>
+        {% else %}
+            <h3>Não definido</h3>
+        {% endif %}
+
+        {% if vice %}
+            <div style="margin-top: 20px; opacity: 0.8;">
+                <p>🥈 <strong>Vice-Campeão:</strong> {{ vice.nome }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<h3>Ranking Geral (Classificatória)</h3>
+<div class="table-responsive">
+    <table class="inscritos-table">
+        <thead>
+            <tr>
+                <th>Pos</th>
+                <th>Jogador</th>
+                <th>Pontos</th>
+                <th>Status Final</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inscricao in ranking %}
+            <tr class="{% if inscricao.status_participacao == 'Vencedor' %}row-classificado{% endif %}">
+                <td>{{ loop.index }}º</td>
+                <td><strong>{{ inscricao.jogador.nome }}</strong></td>
+                <td>{{ inscricao.pontos }}</td>
+                <td>
+                    {% if inscricao.status_participacao == 'Vencedor' %}
+                        <span class="status-badge status-vencedor">CAMPEÃO</span>
+                    {% elif loop.index <= evento.vagas_mata_mata %}
+                        <span class="status-badge status-ativo">Classificado</span>
+                    {% else %}
+                        <span class="status-badge status-eliminado">Eliminado</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -7,17 +7,33 @@
         <p>Confira os próximos torneios e garanta sua vaga!</p>
     </div>
     
+    <!-- NOVO: BARRA DE PESQUISA -->
+    <div class="search-bar-container" style="max-width: 600px; margin: 0 auto 40px auto;">
+        <form action="{{ url_for('lista_eventos') }}" method="GET" style="display: flex; gap: 10px;">
+            <input type="text" name="q" placeholder="Busque por nome do evento ou jogo..." value="{{ termo_busca }}" style="flex: 1;">
+            <button type="submit" class="btn btn-primary">Buscar 🔍</button>
+            {% if termo_busca %}
+                <a href="{{ url_for('lista_eventos') }}" class="btn btn-secondary">Limpar</a>
+            {% endif %}
+        </form>
+    </div>
+    
     <!-- MUDANÇA: Usando um grid de calendário -->
     <div class="calendar-grid">
         
         {% if not eventos %}
             <div class="empty-state-calendar">
-                <p>Nenhum evento agendado no momento.</p>
+                {% if termo_busca %}
+                    <p>Nenhum evento encontrado para "<strong>{{ termo_busca }}</strong>".</p>
+                {% else %}
+                    <p>Nenhum evento agendado no momento.</p>
+                {% endif %}
             </div>
         {% endif %}
 
         {% for e in eventos %}
             <div class="calendar-card">
+                <!-- ... (MANTENHA O CONTEÚDO DO CARD IGUAL) ... -->
                 
                 <!-- A "Folhinha" de Data -->
                 <div class="calendar-date">
@@ -36,13 +52,11 @@
                     
                     <p class="organizer">por {{ e.organizador.nome }}</p>
                     
-                    <!-- Informações Extras (Local e Vagas) -->
                     <div class="calendar-info">
                         <span>📍 {{ e.local }}</span>
                         <span>👥 {{ e.limite_jogadores or 'Ilimitado' }} vagas</span>
                     </div>
 
-                    <!-- Botão de Ação -->
                     <a href="{{ url_for('evento_detalhe', id=e.id) }}" class="btn-calendar-action">Ver Detalhes</a> 
                 </div>
             </div>

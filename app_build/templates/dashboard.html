@@ -1,4 +1,3 @@
-<!-- templates/dashboard.html -->
 {% extends 'base.html' %}
 
 {% block content %}
@@ -8,29 +7,25 @@
         <a href="{{ url_for('criar_evento') }}" class="btn btn-primary">Criar Novo Evento</a>
     </div>
 
-    <!-- 
-        ==================================
-        === MUDANÇA: DIVISÃO DO DASHBOARD ===
-        ==================================
-    -->
-
     <!-- Lista de eventos ATIVOS -->
     <h3>Eventos Ativos</h3>
     <div class="list-wrapper">
-        
-        <!-- 'eventos_ativos' vem do app.py -->
         {% if eventos_ativos %}
             {% for e in eventos_ativos %}
                 <div class="card">
                     <h3>{{ e.nome }}</h3>
-                    <!-- O '.strftime' formata a data para DD/MM/AAAA -->
                     <p>Data: {{ e.data.strftime('%d/%m/%Y') }}</p>
                     <p>Status: <span class="evento-status status-{{ e.status.lower() }}">{{ e.status }}</span></p>
 
                     <div class="card-actions">
-                        <!-- MUDANÇA: O botão "Gerenciar" agora funciona! -->
+                        <!-- Botão GERENCIAR -->
                         <a href="{{ url_for('evento_detalhe', id=e.id) }}" class="btn-card-edit">Gerenciar</a>
-                        <a href="{{ url_for('excluir_evento', id=e.id) }}" class="btn-delete">[Excluir]</a>
+                        
+                        <!-- NOVO: Botão EDITAR (Estilo inline simples pra destacar) -->
+                        <a href="{{ url_for('editar_evento', id=e.id) }}" class="btn-card-edit" style="background-color: #f59e0b;">Editar</a>
+                        
+                        <!-- Botão EXCLUIR -->
+                        <a href="{{ url_for('excluir_evento', id=e.id) }}" class="btn-delete" onclick="return confirm('Tem certeza? Isso apagará todas as inscrições!')">[Excluir]</a>
                     </div>
                 </div>
             {% endfor %}
@@ -44,8 +39,6 @@
     <!-- Lista de eventos FINALIZADOS -->
     <h3>Eventos Finalizados</h3>
     <div class="list-wrapper">
-        
-        <!-- 'eventos_finalizados' vem do app.py -->
         {% if eventos_finalizados %}
             {% for e in eventos_finalizados %}
                 <div class="card card-finalizado">
@@ -54,9 +47,9 @@
                     <p>Status: <span class="evento-status status-{{ e.status.lower() }}">{{ e.status }}</span></p>
 
                     <div class="card-actions">
-                        <!-- MUDANÇA: O botão "Gerenciar" leva para os detalhes -->
-                        <a href="{{ url_for('evento_detalhe', id=e.id) }}" class="btn-card-edit">Ver Detalhes</a>
-                        <a href="{{ url_for('excluir_evento', id=e.id) }}" class="btn-delete">[Excluir]</a>
+                        <a href="{{ url_for('relatorio_evento', id=e.id) }}" class="btn-card-edit">📊 Ver Relatório Final</a>
+                        <!-- Não colocamos Editar em evento finalizado pra preservar o histórico -->
+                        <a href="{{ url_for('excluir_evento', id=e.id) }}" class="btn-delete" onclick="return confirm('Tem certeza?')">[Excluir]</a>
                     </div>
                 </div>
             {% endfor %}

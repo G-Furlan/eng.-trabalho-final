@@ -20,8 +20,6 @@
                 <!-- Links Padrão -->
                 <a href="{{ url_for('lista_eventos') }}">Eventos</a>
                 
-                <!-- ABA JOGADORES REMOVIDA COMPLETAMENTE -->
-
                 <!-- 
                     ==================================
                     === LÓGICA DE LOGIN NO MENU ===
@@ -31,8 +29,11 @@
                     
                     <!-- Se for Organizador, mostra o link do Dashboard -->
                     {% if session.user_type == 'organizador' %}
-                        <a href="{{ url_for('dashboard') }}" class="nav-dashboard-link">Meu Dashboard</a>
+                        <a href="{{ url_for('dashboard') }}" class="nav-dashboard-link">Dashboard</a>
                     {% endif %}
+                    
+                    <!-- NOVO LINK PERFIL -->
+                    <a href="{{ url_for('perfil') }}">Meu Perfil</a>
                     
                     <!-- Se está logado -->
                     <span class="nav-welcome">Olá, {{ session.user_name }}!</span>

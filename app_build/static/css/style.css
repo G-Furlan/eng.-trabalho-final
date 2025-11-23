@@ -2,13 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
 :root {
-    --cor-principal: #E63946;       /* Vermelho forte */
-    --cor-principal-dark: #c9303c;  /* Vermelho escuro (hover) */
-    --cor-fundo: #F9FAFB;           /* Fundo cinza bem claro */
-    --cor-card: #FFFFFF;            /* Branco puro para cards */
-    --cor-texto: #1F2937;           /* Cinza quase preto */
-    --cor-borda: #E5E7EB;           /* Cinza claro para bordas */
-    --cor-destaque: #111827;        /* Preto azulado (headers/botões dark) */
+    --cor-principal: #E63946;
+    --cor-principal-dark: #c9303c;
+    --cor-fundo: #F9FAFB;
+    --cor-card: #FFFFFF;
+    --cor-texto: #1F2937;
+    --cor-borda: #E5E7EB;
+    --cor-destaque: #111827;
     --sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --sombra-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
@@ -24,9 +24,9 @@ body {
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
+/* --- 2. TIPOGRAFIA E CABEÇALHO --- */
 h1, h2, h3 { font-weight: 800; color: var(--cor-principal); margin-bottom: 20px; }
 
-/* --- 2. HEADER E NAVEGAÇÃO --- */
 .header-home, header.header-internal {
     background: var(--cor-card);
     border-bottom: 1px solid var(--cor-borda);
@@ -38,21 +38,17 @@ h1, h2, h3 { font-weight: 800; color: var(--cor-principal); margin-bottom: 20px;
     display: flex; justify-content: space-between; align-items: center;
 }
 
-/* Correção do Logo */
+/* Logo */
 .logo-home, .logo {
-    font-size: 1.5rem; 
-    font-weight: 800; 
-    color: var(--cor-principal); 
-    text-decoration: none;
-    display: inline-block;
-    transition: transform 0.2s ease;
+    font-size: 1.5rem; font-weight: 800; color: var(--cor-principal); text-decoration: none;
+    display: inline-block; transition: transform 0.2s ease;
 }
 .logo-home:hover, .logo:hover { transform: scale(1.05); }
 
+/* Navegação */
 nav { display: flex; align-items: center; }
 nav a {
-    color: var(--cor-texto); text-decoration: none; font-weight: 700; 
-    margin-left: 20px; transition: color 0.2s;
+    color: var(--cor-texto); text-decoration: none; font-weight: 700; margin-left: 20px; transition: color 0.2s;
 }
 nav a:hover { color: var(--cor-principal); }
 
@@ -64,7 +60,27 @@ nav a:hover { color: var(--cor-principal); }
 }
 .nav-dashboard-link:hover { background: var(--cor-principal); color: #fff; }
 
-/* --- 3. BOTÕES GERAIS --- */
+/* --- 3. PÁGINA DE PERFIL --- */
+.perfil-header {
+    display: flex; align-items: center; gap: 20px; background: #fff; padding: 30px;
+    border-radius: 12px; box-shadow: var(--sombra); margin-bottom: 30px;
+}
+.perfil-avatar {
+    width: 80px; height: 80px; background-color: var(--cor-principal); color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; font-weight: 800; flex-shrink: 0;
+}
+.perfil-info h1 { margin-bottom: 5px; font-size: 2rem; }
+.perfil-badge { 
+    display: inline-block; background: var(--cor-destaque); color: #fff; 
+    padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px;
+}
+.perfil-email { color: #666; font-size: 1rem; }
+.resultado-box { margin-top: 15px; padding: 15px; background: #f3f4f6; border-radius: 8px; }
+.text-muted { color: #999; font-style: italic; text-align: center; margin-top: 20px; }
+hr.section-divider { border: 0; border-top: 1px solid var(--cor-borda); margin: 40px 0; }
+
+/* --- 4. BOTÕES --- */
 .btn {
     display: inline-block; padding: 10px 20px; border: none; border-radius: 8px;
     font-weight: 700; font-size: 0.95rem; text-decoration: none; cursor: pointer;
@@ -84,7 +100,6 @@ nav a:hover { color: var(--cor-principal); }
 .btn-delete, .btn-cancelar { background-color: #dc2626; color: #fff; font-size: 0.9rem; padding: 8px 16px; }
 .btn-delete:hover, .btn-cancelar:hover { background-color: #b91c1c; }
 
-/* Botões Específicos do Menu */
 .btn-login, .btn-login-nav { 
     background: var(--cor-principal); color: #fff !important; 
     padding: 8px 16px; border-radius: 6px; display: inline-block;
@@ -98,7 +113,7 @@ nav a:hover { color: var(--cor-principal); }
 }
 .btn-logout:hover { background: #000; transform: translateY(-1px); }
 
-/* --- 4. FORMULÁRIOS --- */
+/* --- 5. FORMULÁRIOS --- */
 .form-wrapper, .login-container {
     background: var(--cor-card); padding: 30px; border-radius: 12px;
     box-shadow: var(--sombra); margin-bottom: 40px; width: 100%;
@@ -116,7 +131,7 @@ nav a:hover { color: var(--cor-principal); }
 .btn-full-width { width: 100%; }
 .login-footer { margin-top: 20px; font-size: 0.9rem; color: #777; }
 
-/* --- 5. LISTAS, CARDS E CALENDÁRIO --- */
+/* --- 6. LISTAS E CARDS --- */
 .list-wrapper, .calendar-grid { 
     display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; 
 }
@@ -124,16 +139,16 @@ nav a:hover { color: var(--cor-principal); }
     background: var(--cor-card); border: 1px solid var(--cor-borda); border-radius: 12px;
     padding: 25px; box-shadow: var(--sombra); transition: transform 0.2s; overflow: hidden;
 }
-.calendar-card { display: flex; padding: 0; } /* Reset padding for calendar flex */
+.calendar-card { display: flex; padding: 0; }
 
 .card:hover, .calendar-card:hover { transform: translateY(-4px); box-shadow: var(--sombra-hover); }
 .card h3 { margin-bottom: 10px; font-size: 1.25rem; }
 .card-actions { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--cor-borda); display: flex; justify-content: space-between; align-items: center; }
 
-/* Estilo do Calendário */
+/* Calendário */
 .calendar-date {
     background: var(--cor-principal); color: #fff; width: 80px; 
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .calendar-date .day { font-size: 2rem; font-weight: 800; line-height: 1; }
 .calendar-date .month { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; }
@@ -149,7 +164,7 @@ nav a:hover { color: var(--cor-principal); }
 }
 .btn-calendar-action:hover { background: var(--cor-principal); color: #fff; }
 
-/* --- 6. TABELAS E GESTÃO --- */
+/* --- 7. TABELAS E GESTÃO --- */
 .inscritos-table {
     width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff;
     border-radius: 8px; overflow: hidden; box-shadow: var(--sombra);
@@ -166,6 +181,8 @@ nav a:hover { color: var(--cor-principal); }
 .input-pontos { width: 70px; padding: 6px; text-align: center; border: 1px solid var(--cor-borda); border-radius: 6px; }
 .btn-icon-save { background: none; border: none; cursor: pointer; font-size: 1.2rem; margin-left: 5px; }
 .btn-card-edit { background: var(--cor-destaque); color: #fff; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; text-decoration: none; display: inline-block; }
+.btn-card-participar { border: 2px solid var(--cor-principal); color: var(--cor-principal); padding: 6px 12px; border-radius: 6px; font-size: 0.9rem; font-weight: 700; text-decoration: none; display: inline-block; }
+.btn-card-participar:hover { background: var(--cor-principal); color: #fff; }
 
 .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
 .status-ativo { background: #d1fae5; color: #065f46; }
@@ -176,7 +193,7 @@ nav a:hover { color: var(--cor-principal); }
 .btn-vencedor { background-color: #f59e0b; color: #000; }
 .btn-reativar { background-color: #6b7280; }
 
-/* --- 7. CHAVES (BRACKET) --- */
+/* --- 8. CHAVES (BRACKET) --- */
 .bracket-container { padding: 30px 0; overflow-x: auto; }
 .bracket-grid { display: flex; gap: 40px; align-items: center; justify-content: center; }
 .match-card {
@@ -191,16 +208,17 @@ nav a:hover { color: var(--cor-principal); }
 .btn-win { font-size: 0.7rem; background: var(--cor-principal); color: #fff; padding: 2px 8px; border-radius: 4px; text-decoration: none; }
 .btn-win:hover { background: var(--cor-principal-dark); }
 
-/* --- 8. EXTRAS --- */
+/* --- 9. HERO SECTION (HOME) --- */
 .hero-section {
-    min-height: 80vh; display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(230, 57, 70, 0.8)), url('https://placehold.co/1920x1080/111/FFF');
-    background-size: cover; color: #fff;
+    min-height: 85vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(230, 57, 70, 0.75)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1920&q=80');
+    background-size: cover; background-position: center; color: #fff;
 }
-.hero-content { display: flex; justify-content: space-between; width: 100%; max-width: 1200px; padding: 0 20px; align-items: center; }
+.hero-content { display: flex; justify-content: space-between; width: 100%; max-width: 1200px; padding: 0 20px; align-items: center; gap: 40px; }
 .hero-text-box { max-width: 500px; }
-.hero-text-box h2 { color: #fff; font-size: 2.5rem; }
-.hero-call-to-action .btn { display: block; width: 100%; margin-bottom: 10px; text-align: center; }
+.hero-text-box h2 { color: #fff; font-size: 3rem; line-height: 1.1; }
+.hero-call-to-action { max-width: 400px; width: 100%; }
+.hero-call-to-action .btn { display: block; width: 100%; margin-bottom: 15px; text-align: center; padding: 15px; font-size: 1.1rem; }
 
 .flash-message { padding: 15px; margin-bottom: 20px; border-radius: 8px; font-weight: 600; }
 .flash-info { background: #eff6ff; color: #1e40af; border: 1px solid #dbeafe; }

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="perfil-header">
+    <div class="perfil-avatar">
+        {{ usuario.nome[0].upper() }}
+    </div>
+    <div class="perfil-info">
+        <h1>{{ usuario.nome }}</h1>
+        <p class="perfil-badge">{{ tipo|capitalize }}</p>
+        <p class="perfil-email">{{ usuario.email }}</p>
+        {% if tipo == 'jogador' %}
+            <p>Idade: {{ usuario.idade }} anos</p>
+        {% endif %}
+    </div>
+</div>
+
+<hr class="section-divider">
+
+<h3>🔥 Em Andamento</h3>
+{% if ativos %}
+    <div class="list-wrapper">
+        {% for item in ativos %}
+            <div class="card">
+                {% if tipo == 'jogador' %}
+                    <h3>{{ item.evento.nome }}</h3>
+                    <p><strong>Data:</strong> {{ item.evento.data.strftime('%d/%m/%Y') }}</p>
+                    <p><strong>Pontos Atuais:</strong> {{ item.pontos }}</p>
+                    <div class="card-actions">
+                        <a href="{{ url_for('evento_detalhe', id=item.evento.id) }}" class="btn-card-participar">Ver Evento</a>
+                    </div>
+                {% else %}
+                    <h3>{{ item.nome }}</h3>
+                    <p><strong>Fase:</strong> {{ item.fase_atual }}</p>
+                    <div class="card-actions">
+                        <a href="{{ url_for('dashboard') }}" class="btn-card-edit">Gerenciar</a>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-muted">Nada acontecendo no momento.</p>
+{% endif %}
+
+<h3 style="margin-top: 40px;">📜 Histórico e Resultados</h3>
+{% if passados %}
+    <div class="list-wrapper">
+        {% for item in passados %}
+            <div class="card card-finalizado">
+                {% if tipo == 'jogador' %}
+                    <h3>{{ item.evento.nome }}</h3>
+                    <p>Data: {{ item.evento.data.strftime('%d/%m/%Y') }}</p>
+                    
+                    <div class="resultado-box">
+                        <p>Sua Pontuação: <strong>{{ item.pontos }}</strong></p>
+                        <p>Resultado Final: 
+                            {% if item.status_participacao == 'Vencedor' %}
+                                <span class="status-badge status-vencedor">CAMPEÃO 🏆</span>
+                            {% else %}
+                                <span class="status-badge status-eliminado">{{ item.status_participacao }}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                {% else %}
+                    <h3>{{ item.nome }}</h3>
+                    <p>Data: {{ item.data.strftime('%d/%m/%Y') }}</p>
+                    <p><strong>Vencedor:</strong> {{ item.campeao_nome }} 🏆</p>
+                    <div class="card-actions">
+                        <!-- MUDANÇA: Link para o Relatório -->
+                        <a href="{{ url_for('relatorio_evento', id=item.id) }}" class="btn-card-edit">Ver Relatório</a>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="text-muted">Nenhum histórico encontrado.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="form-wrapper">
+        <div class="detalhe-header">
+            <h2>Editar Evento: {{ evento.nome }}</h2>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancelar</a>
+        </div>
+
+        <form action="{{ url_for('atualizar_evento', id=evento.id) }}" method="POST">
+            <div class="form-group">
+                <label for="nome">Nome do Evento *</label>
+                <input id="nome" name="nome" value="{{ evento.nome }}" required>
+            </div>
+            <div class="form-group">
+                <label for="jogo">Jogo *</label>
+                <input id="jogo" name="jogo" value="{{ evento.jogo }}" required>
+            </div>
+            
+            <div style="display: flex; gap: 20px;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="data">Data de Início *</label>
+                    <!-- O filtro strftime garante que o input type=date entenda o valor -->
+                    <input type="date" id="data" name="data" value="{{ evento.data.strftime('%Y-%m-%d') }}" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="horario">Horário de Início *</label>
+                    <input type="time" id="horario" name="horario" value="{{ evento.horario.strftime('%H:%M') }}" required>
+                </div>
+            </div>
+
+            <!-- Só mostra opção de mudar formato se o mata-mata não começou -->
+            {% if evento.fase_atual == 'Classificatoria' %}
+            <div class="form-group">
+                <label for="vagas_mata_mata">Formato da Fase Final (Mata-Mata) *</label>
+                <select id="vagas_mata_mata" name="vagas_mata_mata" required style="width: 100%; padding: 10px; border: 1px solid #DDDDDD; border-radius: 5px;">
+                    <option value="2" {% if evento.vagas_mata_mata == 2 %}selected{% endif %}>Final Direta (2 Melhores)</option>
+                    <option value="4" {% if evento.vagas_mata_mata == 4 %}selected{% endif %}>Top 4 (Semifinais + Final)</option>
+                    <option value="8" {% if evento.vagas_mata_mata == 8 %}selected{% endif %}>Top 8 (Quartas + Semis + Final)</option>
+                    <option value="16" {% if evento.vagas_mata_mata == 16 %}selected{% endif %}>Top 16</option>
+                </select>
+            </div>
+            {% else %}
+                <input type="hidden" name="vagas_mata_mata" value="{{ evento.vagas_mata_mata }}">
+                <p style="font-size: 0.9rem; color: #e63946; margin-bottom: 15px;">
+                    ⚠️ O formato não pode ser alterado pois o mata-mata já começou.
+                </p>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="descricao">Descrição do Evento / Regras</label>
+                <textarea id="descricao" name="descricao" rows="5" class="form-control">{{ evento.descricao }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="link_externo">Link Externo (Opcional)</label>
+                <input type="url" id="link_externo" name="link_externo" value="{{ evento.link_externo or '' }}">
+            </div>
+
+            <div class="form-group">
+                <label for="limite_jogadores">Limite de Inscrições</label>
+                <input type="number" id="limite_jogadores" name="limite_jogadores" value="{{ evento.limite_jogadores or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="faixa_etaria">Faixa etária</label>
+                <input id="faixa_etaria" name="faixa_etaria" value="{{ evento.faixa_etaria or '' }}">
+            </div>
+            <div class="form-group">
+                <label for="local">Local *</label>
+                <input id="local" name="local" value="{{ evento.local }}" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        </form>
+    </div>
+        
+{% endblock %}
